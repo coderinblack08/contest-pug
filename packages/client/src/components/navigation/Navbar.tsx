@@ -46,7 +46,9 @@ export const Navbar: React.FC<{}> = () => {
                 <MenuButton
                   as={IconButton}
                   aria-label="menu"
-                  icon={MenuIcon}
+                  {...{
+                    icon: MenuIcon,
+                  }}
                   bg={colorMode === 'dark' ? 'gray.800' : 'white'}
                   size="lg"
                   display={['flex', 'flex', 'none', 'none']}

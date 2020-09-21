@@ -16,6 +16,7 @@ export const CTACard: React.FC<CardProps> = ({ heading, icon }) => {
     <MotionBox
       p={8}
       mx={4}
+      mb={8}
       w={['100%', '100%', '100%', '30%']}
       rounded="lg"
       bg={colorMode === 'light' ? 'gray.50' : 'gray.700'}
