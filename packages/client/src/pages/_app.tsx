@@ -9,10 +9,19 @@ const App = ({ Component, pageProps, initialColorMode }: any) => {
     <div>
       <Head>
         <title>Contest Pug</title>
-        <link
-          href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap"
-          rel="stylesheet"
+        <meta charSet="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+        <meta name="robots" content="index, follow" />
+        <meta
+          name="description"
+          content="Contest Pug, your solution to hosting online competitions and tests"
         />
+        <meta
+          name="keywords"
+          content="contest pug, competitions, contests, tests"
+        />
+        <link rel="icon" href={require('../static/favicon/favicon.ico')} />
       </Head>
       <ThemeProvider theme={theme}>
         <ColorModeProvider value={initialColorMode}>

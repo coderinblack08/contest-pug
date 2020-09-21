@@ -6,7 +6,6 @@
   "password": "",
   "database": "contest-pug",
   "synchronize": true,
-  "logging": false,
   "logging": true,
   "entities": ["src/entity/**/*.ts"],
   "migrations": ["src/migration/**/*.ts"],
