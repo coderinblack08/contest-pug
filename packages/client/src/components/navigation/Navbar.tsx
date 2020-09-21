@@ -21,6 +21,10 @@ import { LogoComponent } from '../static/LogoComponent';
 export const Navbar: React.FC<{}> = () => {
   const { colorMode, toggleColorMode } = useColorMode();
   const TextColor = colorMode === 'dark' ? 'gray.200' : 'gray.700';
+  const toggleColorModeCookie = () => {
+    toggleColorMode();
+    document.cookie = `isDarkMode=${colorMode === 'light'}`;
+  };
   return (
     <Box color={TextColor as any}>
       <Flex justify="center">
@@ -52,9 +56,10 @@ export const Navbar: React.FC<{}> = () => {
                   <MenuItem>Our Team</MenuItem>
                   <MenuItem>Login</MenuItem>
                   <MenuItem>Register</MenuItem>
-                  <MenuItem onClick={toggleColorMode}>
-                    Toggle{' '}
-                    {`${colorMode[0].toUpperCase()}${colorMode.slice(1)}`} Mode
+                  <MenuItem onClick={toggleColorModeCookie}>
+                    Toggle
+                    {` ${colorMode[0].toUpperCase()}${colorMode.slice(1)}`}
+                    Mode
                   </MenuItem>
                 </MenuList>
               </Menu>

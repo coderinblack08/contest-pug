@@ -22,5 +22,7 @@ module.exports = {
     'import/no-unresolved': 'off',
     'jsx-a11y/anchor-is-valid': 'off',
     'react/jsx-props-no-spreading': 'off',
+    'object-curly-newline': 'off',
+    'react/prop-types': 'off',
   },
 };

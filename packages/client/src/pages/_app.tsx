@@ -1,8 +1,8 @@
 import { ColorModeProvider, CSSReset, ThemeProvider } from '@chakra-ui/core';
 import React from 'react';
-import cookies from 'next-cookies';
 import Head from 'next/head';
 import theme from '../theme';
+import cookies from 'next-cookies';
 
 const App = ({ Component, pageProps, initialColorMode }: any) => (
   <div>
