@@ -18,7 +18,7 @@ import { DarkModeSwitch } from '../DarkModeSwitch';
 import { Container } from '../helpers/Container';
 import { LogoComponent } from '../static/LogoComponent';
 
-export const Navbar: React.FC<{}> = ({}) => {
+export const Navbar: React.FC<{}> = () => {
   const { colorMode, toggleColorMode } = useColorMode();
   const TextColor = colorMode === 'dark' ? 'gray.200' : 'gray.700';
   return (
@@ -46,7 +46,7 @@ export const Navbar: React.FC<{}> = ({}) => {
                   bg={colorMode === 'dark' ? 'gray.800' : 'white'}
                   size="lg"
                   display={['flex', 'flex', 'none', 'none']}
-                ></MenuButton>
+                />
                 <MenuList>
                   <MenuItem>Our Message</MenuItem>
                   <MenuItem>Our Team</MenuItem>
