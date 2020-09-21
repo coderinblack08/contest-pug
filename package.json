@@ -4,7 +4,9 @@
     "packages/*"
   ],
   "scripts": {
-    "build": "lerna run build"
+    "build": "lerna run build",
+    "new-version": "lerna version --conventional-commits --yes",
+    "diff": "lerna diff"
   },
   "devDependencies": {
     "lerna": "^3.22.1"

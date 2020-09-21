@@ -1,6 +1,6 @@
 # Contest Pug
 
-> 🐶 💼 The smarter way to host online competitions [https://contestpug.vercel.app](Contest Pug)
+> 🐶 💼 The smarter way to host online competitions
 
 # What do we do?
 
@@ -23,7 +23,7 @@ writters to toggle on and off leaderboards, private contests, etc.
 - Apollo Client
 - Chakra UI + Tailwind
 
-## ⚙️ Backend
+## Backend
 
 - Graphql
   - Apollo Express
