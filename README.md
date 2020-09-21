@@ -1,32 +1,40 @@
-package.json:
-{
-  "name": "@contest-pug/server",
-  "version": "1.0.0",
-  "main": "dist/index.js",
-  "license": "MIT",
-  "scripts": {
-    "start": "ts-node src/index.ts",
-    "dev": "nodemon --exec ts-node src/index.ts",
-    "build": "tsc"
-  },
-  "devDependencies": {
-    "@types/node": "^14.11.1",
-    "nodemon": "^2.0.4",
-    "ts-node": "^9.0.0",
-    "typescript": "^4.0.3"
-  }
-}
+# Contest Pug
 
-tsconfig: 
-{
-  "extends": "../../tsconfig.json",
-  "compilerOptions": {
-    "target": "es6",
-    "module": "commonjs",
-    "moduleResolution": "node",
-    "rootDir": "src",
-    "outDir": "dist",
-    "declaration": true
-  }
-}
+> 🐶 💼 The smarter way to host online competitions [https://contestpug.vercel.app](Contest Pug)
 
+# What do we do?
+
+Contest Pug allows teachers, students, competitiors, and test writters to collaberate on on platform, making it
+easy to find and help others with similar interests. Contest pug can also be used for test taking, allowing test
+writters to toggle on and off leaderboards, private contests, etc.
+
+# Technology Stack
+
+## Overall
+
+- Yarn workspaces
+- Monorepo with Lerna
+
+## Frontend
+
+- React
+- Typescript
+- Graphql Codegen
+- Apollo Client
+- Chakra UI + Tailwind
+
+## ⚙️ Backend
+
+- Graphql
+  - Apollo Express
+  - Type Graphql
+- Typescript
+- Postgresql
+  - TypeORM
+- Docker
+  - Kubernetes
+  - Dokku
+
+# Contributors
+
+Created with 💖 by Coderinblack
