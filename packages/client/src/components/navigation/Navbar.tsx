@@ -80,7 +80,6 @@ export const Navbar: React.FC<{}> = () => {
             >
               <Menu>
                 <MenuButton
-                  tabIndex={0}
                   _focus={{
                     shadow: 'outline',
                   }}

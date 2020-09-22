@@ -1,4 +1,4 @@
-import { Box, Flex, Icon, Stack } from '@chakra-ui/core';
+import { Box, Stack } from '@chakra-ui/core';
 import { Chat, DesktopComputer, Sparkles } from 'heroicons-react';
 import React from 'react';
 import { CTASection } from '../components/index/CTASection';
