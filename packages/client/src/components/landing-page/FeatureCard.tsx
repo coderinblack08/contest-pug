@@ -9,14 +9,13 @@ interface CardProps {
 
 const MotionBox = motion.custom(Box);
 
-export const CTACard: React.FC<CardProps> = ({ heading, icon }) => {
+export const FeatureCard: React.FC<CardProps> = ({ heading, icon }) => {
   const { colorMode } = useColorMode();
-
   return (
     <MotionBox
       p={8}
       mx={4}
-      mb={8}
+      mb={4}
       w={['100%', '100%', '100%', '30%']}
       rounded="lg"
       bg={colorMode === 'light' ? 'gray.50' : 'gray.700'}

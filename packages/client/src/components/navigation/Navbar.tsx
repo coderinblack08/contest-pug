@@ -74,6 +74,10 @@ export const Navbar: React.FC<{}> = () => {
               <NextLink href="/">
                 <Menu>
                   <MenuButton
+                    tabIndex={0}
+                    _focus={{
+                      shadow: 'outline',
+                    }}
                     as={Text}
                     bg="transparent"
                     color={TextColor as any}
@@ -89,10 +93,14 @@ export const Navbar: React.FC<{}> = () => {
                 </Menu>
               </NextLink>
               <NextLink href="/team">
-                <Link mr={8}>Our Team</Link>
+                <Link mr={8} tabIndex={0}>
+                  Our Team
+                </Link>
               </NextLink>
               <NextLink href="/login">
-                <Link mr={8}>Login</Link>
+                <Link mr={8} tabIndex={0}>
+                  Login
+                </Link>
               </NextLink>
               <Button variantColor="primary" fontWeight="normal" mr={6}>
                 Get Started

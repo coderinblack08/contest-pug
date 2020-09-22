@@ -24,5 +24,6 @@ module.exports = {
     'react/jsx-props-no-spreading': 'off',
     'object-curly-newline': 'off',
     'react/prop-types': 'off',
+    'react/no-unescaped-entities': 'off',
   },
 };
