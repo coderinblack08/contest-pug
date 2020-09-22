@@ -4,12 +4,13 @@ import React from 'react';
 
 interface CardProps {
   heading: string;
+  text: string;
   icon: any;
 }
 
 const MotionBox = motion.custom(Box);
 
-export const FeatureCard: React.FC<CardProps> = ({ heading, icon }) => {
+export const FeatureCard: React.FC<CardProps> = ({ heading, icon, text }) => {
   const { colorMode } = useColorMode();
   return (
     <MotionBox
@@ -38,8 +39,7 @@ export const FeatureCard: React.FC<CardProps> = ({ heading, icon }) => {
         </Heading>
       </Stack>
       <Text my={3} color={colorMode === 'light' ? 'gray.500' : 'gray.400'}>
-        Contest Pug is a hassle-free platform, meaning that you all you have to
-        do is create an account and solve problems!
+        {text}
       </Text>
     </MotionBox>
   );

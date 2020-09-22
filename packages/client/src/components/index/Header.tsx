@@ -14,7 +14,15 @@ export const Header: React.FC<{}> = () => (
           >
             Insipring Contests
             <br />
-            Minus the Hassle
+            <Text
+              style={{
+                background: 'linear-gradient(145deg,#12c2e9,#c471ed,#f64f59)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+              }}
+            >
+              Minus the Hassle
+            </Text>
           </Heading>
           <Text
             color="gray.400"
