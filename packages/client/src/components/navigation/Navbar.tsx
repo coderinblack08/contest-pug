@@ -6,6 +6,8 @@ import {
   Link,
   Menu,
   MenuButton,
+  MenuDivider,
+  MenuGroup,
   MenuItem,
   MenuList,
   Text,
@@ -54,7 +56,12 @@ export const Navbar: React.FC<{}> = () => {
                   display={['flex', 'flex', 'none', 'none']}
                 />
                 <MenuList>
-                  <MenuItem>Our Message</MenuItem>
+                  <MenuGroup title="Our Message">
+                    <MenuItem>Landing Page</MenuItem>
+                    <MenuItem>Our Goals</MenuItem>
+                    <MenuItem>Open Source</MenuItem>
+                  </MenuGroup>
+                  <MenuDivider />
                   <MenuItem>Our Team</MenuItem>
                   <MenuItem>Login</MenuItem>
                   <MenuItem>Register</MenuItem>
@@ -71,27 +78,25 @@ export const Navbar: React.FC<{}> = () => {
               justify="items-center"
               display={['none', 'none', 'flex', 'flex']}
             >
-              <NextLink href="/">
-                <Menu>
-                  <MenuButton
-                    tabIndex={0}
-                    _focus={{
-                      shadow: 'outline',
-                    }}
-                    as={Text}
-                    bg="transparent"
-                    color={TextColor as any}
-                    mr={8}
-                  >
-                    Our Message
-                  </MenuButton>
-                  <MenuList>
-                    <MenuItem>Landing Page</MenuItem>
-                    <MenuItem>Our Goals</MenuItem>
-                    <MenuItem>Open Source</MenuItem>
-                  </MenuList>
-                </Menu>
-              </NextLink>
+              <Menu>
+                <MenuButton
+                  tabIndex={0}
+                  _focus={{
+                    shadow: 'outline',
+                  }}
+                  as={Text}
+                  bg="transparent"
+                  color={TextColor as any}
+                  mr={8}
+                >
+                  Our Message
+                </MenuButton>
+                <MenuList>
+                  <MenuItem>Landing Page</MenuItem>
+                  <MenuItem>Our Goals</MenuItem>
+                  <MenuItem>Open Source</MenuItem>
+                </MenuList>
+              </Menu>
               <NextLink href="/team">
                 <Link mr={8} tabIndex={0}>
                   Our Team

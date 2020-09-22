@@ -15,6 +15,7 @@ export const CTASection: React.FC<{}> = () => (
           src={require('../../static/images/godd-doggy.svg')}
           w={['70%', '50%', '40%', '80%']}
           zIndex={2}
+          maxW="680px"
           mb={10}
         />
       </Flex>

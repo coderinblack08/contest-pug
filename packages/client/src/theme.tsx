@@ -15,6 +15,7 @@ const theme = {
     ...chakraTheme.colors,
     black: '#16161D',
     primary: {
+      50: '#F4F7FE',
       100: '#E8EFFE',
       200: '#C6D8FC',
       300: '#A4C1FA',

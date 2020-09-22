@@ -36,7 +36,7 @@ export const Header: React.FC<{}> = () => (
               px={8}
               py={6}
             >
-              Get Started
+              Dashboard
             </Button>
           </Stack>
         </Box>
