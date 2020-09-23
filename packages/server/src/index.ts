@@ -2,7 +2,7 @@ import 'dotenv/config';
 import 'reflect-metadata';
 import cors from 'cors';
 import express from 'express';
-import { createConnection } from 'typeorm';
+import { createConnection, getConnectionOptions } from 'typeorm';
 import { cookie_name, port, __prod__ } from './constants';
 import { ApolloServer } from 'apollo-server-express';
 import { buildSchema } from 'type-graphql';
@@ -13,15 +13,22 @@ import connectRedis from 'connect-redis';
 import Redis from 'ioredis';
 
 const main = async () => {
+  const connectionOptions = await getConnectionOptions();
+
+  Object.assign(connectionOptions, {
+    database: process.env.TYPEORM_DATABASE ? 'test-contest-pug' : 'contest-pug',
+  });
+
   await createConnection();
 
   const app = express();
 
   app.use(
     cors({
-      origin: __prod__
-        ? 'https://contestpug.vercel.app'
-        : 'http://localhost:3000',
+      // origin: __prod__
+      //   ? 'https://contestpug.vercel.app'
+      //   : 'http://localhost:3000',
+      origin: '*',
       credentials: true,
     })
   );
