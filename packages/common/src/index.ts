@@ -1,1 +1,1 @@
-export * from '../src/model/userSchema';
+export * from './model/userSchema';

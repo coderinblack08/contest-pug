@@ -25,10 +25,9 @@ const main = async () => {
 
   app.use(
     cors({
-      // origin: __prod__
-      //   ? 'https://contestpug.vercel.app'
-      //   : 'http://localhost:3000',
-      origin: '*',
+      origin: __prod__
+        ? 'https://contestpug.vercel.app'
+        : 'http://localhost:3000',
       credentials: true,
     })
   );
@@ -50,7 +49,7 @@ const main = async () => {
         sameSite: 'lax',
       },
       saveUninitialized: false,
-      secret: process.env.SECRET as string,
+      secret: process.env.SESSION_SECRET as string,
       resave: false,
     })
   );

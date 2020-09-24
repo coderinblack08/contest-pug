@@ -13,6 +13,7 @@ import {
   Text,
   useColorMode,
 } from '@chakra-ui/core';
+import { useRouter } from 'next/router';
 import { Menu as MenuIcon } from 'heroicons-react';
 import NextLink from 'next/link';
 import React from 'react';
@@ -21,6 +22,7 @@ import { Container } from '../helpers/Container';
 import { LogoComponent } from '../static/LogoComponent';
 
 export const Navbar: React.FC<{}> = () => {
+  const router = useRouter();
   const { colorMode, toggleColorMode } = useColorMode();
   const TextColor = colorMode === 'dark' ? 'gray.200' : 'gray.700';
   const toggleColorModeCookie = () => {
@@ -106,7 +108,12 @@ export const Navbar: React.FC<{}> = () => {
                   Login
                 </Link>
               </NextLink>
-              <Button variantColor="primary" fontWeight="normal" mr={6}>
+              <Button
+                variantColor="primary"
+                fontWeight="normal"
+                mr={6}
+                onClick={() => router.push('/register')}
+              >
                 Get Started
               </Button>
               <DarkModeSwitch />

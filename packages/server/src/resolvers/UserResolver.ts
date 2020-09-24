@@ -3,10 +3,10 @@ import { Arg, Ctx, Mutation, Query, Resolver } from 'type-graphql';
 import { RegisterArgs } from '../types/graphql/inputs/RegisterArgs';
 import { registerSchema } from '@contest-pug/common';
 import { UserResponse } from '../types/graphql/UserResponse';
-import { parseYupErrors } from '../utils/parseYupErrors';
 import { LoginArgs } from '../types/graphql/inputs/LoginArgs';
 import { MyContext } from '../types/MyContext';
 import { User } from '../entity/User';
+import { parseYupErrors } from '../utils/parseYupErrors';
 
 @Resolver()
 export class UserResolver {
@@ -20,7 +20,8 @@ export class UserResolver {
 
   @Mutation(() => UserResponse)
   async register(
-    @Arg('options', () => RegisterArgs) options: RegisterArgs
+    @Arg('options', () => RegisterArgs) options: RegisterArgs,
+    @Ctx() { req }: MyContext
   ): Promise<UserResponse> {
     try {
       await registerSchema.validate(options);
@@ -32,6 +33,7 @@ export class UserResolver {
       ...options,
       password: hashedPassword,
     }).save();
+    req.session.userId = user.id;
     return { user };
   }
 

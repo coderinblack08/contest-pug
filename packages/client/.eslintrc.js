@@ -25,5 +25,6 @@ module.exports = {
     'object-curly-newline': 'off',
     'react/prop-types': 'off',
     'react/no-unescaped-entities': 'off',
+    'arrow-body-style': 'off',
   },
 };

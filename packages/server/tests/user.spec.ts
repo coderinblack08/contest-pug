@@ -57,4 +57,20 @@ describe('User resolves', () => {
       expect(data.login.user).toHaveProperty(field)
     );
   });
+  test('should return a user', async () => {
+    const {
+      data: { data },
+    } = await axios.post('http://localhost:40000/graphql', {
+      query: `
+      {
+        me {
+          id
+          name
+          email
+        }
+      }
+      `,
+    });
+    expect(data.me.errors).toBeNull();
+  });
 });

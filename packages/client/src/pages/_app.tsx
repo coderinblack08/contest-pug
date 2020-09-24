@@ -1,11 +1,25 @@
 import { ColorModeProvider, CSSReset, ThemeProvider } from '@chakra-ui/core';
+import { ApolloProvider, ApolloClient, InMemoryCache } from '@apollo/client';
 import cookies from 'next-cookies';
+import { Router } from 'next/router';
+import NProgress from 'nprogress';
+import 'nprogress/nprogress.css';
 import React from 'react';
 import Head from 'next/head';
 import theme from '../theme';
 
+const client = new ApolloClient({
+  uri: 'http://localhost:4000/graphql',
+  credentials: 'include',
+  cache: new InMemoryCache(),
+});
+
+Router.events.on('routeChangeStart', () => NProgress.start());
+Router.events.on('routeChangeComplete', () => NProgress.done());
+Router.events.on('routeChangeError', () => NProgress.done());
+
 const App = ({ Component, pageProps, initialColorMode }: any) => (
-  <div>
+  <ApolloProvider client={client}>
     <Head>
       <title>Contest Pug</title>
       <meta charSet="utf-8" />
@@ -32,7 +46,7 @@ const App = ({ Component, pageProps, initialColorMode }: any) => (
         <Component {...pageProps} />
       </ColorModeProvider>
     </ThemeProvider>
-  </div>
+  </ApolloProvider>
 );
 
 App.getInitialProps = async ({ Component, ctx }: any) => {
