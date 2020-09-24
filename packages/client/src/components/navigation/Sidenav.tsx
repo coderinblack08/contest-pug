@@ -1,0 +1,222 @@
+import {
+  Box,
+  Flex,
+  Heading,
+  Image,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuList,
+  Text,
+  useColorMode,
+} from '@chakra-ui/core';
+import React from 'react';
+import { LogoComponent } from '../static/LogoComponent';
+
+export const Sidenav: React.FC<{}> = () => {
+  const { colorMode, toggleColorMode } = useColorMode();
+  const isDark = colorMode === 'dark';
+  return (
+    <Box
+      w={['280px', '320px']}
+      h="100vh"
+      bg={isDark ? 'gray.700' : 'white'}
+      borderRightColor={isDark ? 'gray.600' : 'gray.100'}
+      borderRightStyle="solid"
+      borderRightWidth={1}
+      p={6}
+    >
+      <Flex px={2} pb={5} mt={-2}>
+        <LogoComponent tag={false} />
+      </Flex>
+      <Flex align="center" p={4}>
+        <Image
+          w="1.5rem"
+          fill="none"
+          stroke="currentColor"
+          {...{
+            viewBox: '0 0 24 24',
+          }}
+          color={isDark ? 'gray.400' : 'gray.500'}
+          as="svg"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
+          />
+        </Image>
+        <Text
+          fontSize="xl"
+          color={isDark ? 'gray.400' : 'gray.500'}
+          ml={3}
+          fontWeight="medium"
+        >
+          Dashboard
+        </Text>
+      </Flex>
+      <Flex align="center" p={4}>
+        <Image
+          w="1.5rem"
+          fill="none"
+          stroke="currentColor"
+          {...{
+            viewBox: '0 0 24 24',
+          }}
+          color={isDark ? 'gray.400' : 'gray.500'}
+          as="svg"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+          />
+        </Image>
+        <Text
+          fontSize="xl"
+          color={isDark ? 'gray.400' : 'gray.500'}
+          ml={3}
+          fontWeight="medium"
+        >
+          Search
+        </Text>
+      </Flex>
+      <Flex align="center" p={4}>
+        <Image
+          w="1.5rem"
+          fill="none"
+          stroke="currentColor"
+          {...{
+            viewBox: '0 0 24 24',
+          }}
+          color={isDark ? 'gray.400' : 'gray.500'}
+          as="svg"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
+          />
+        </Image>
+        <Text
+          fontSize="xl"
+          color={isDark ? 'gray.400' : 'gray.500'}
+          ml={3}
+          fontWeight="medium"
+        >
+          Contests
+        </Text>
+      </Flex>
+      <Flex align="center" p={4}>
+        <Image
+          w="1.5rem"
+          fill="none"
+          stroke="currentColor"
+          {...{
+            viewBox: '0 0 24 24',
+          }}
+          color={isDark ? 'gray.400' : 'gray.500'}
+          as="svg"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3"
+          />
+        </Image>
+        <Text
+          fontSize="xl"
+          color={isDark ? 'gray.400' : 'gray.500'}
+          ml={3}
+          fontWeight="medium"
+        >
+          Scores
+        </Text>
+      </Flex>
+      <Flex
+        justify="space-between"
+        w={['280px', '320px']}
+        bg={isDark ? 'gray.800' : 'gray.50'}
+        borderRightColor={isDark ? 'gray.600' : 'gray.100'}
+        borderTopColor={isDark ? 'gray.600' : 'gray.100'}
+        borderRightStyle="solid"
+        borderTopStyle="solid"
+        borderRightWidth={1}
+        borderTopWidth={1}
+        pos="absolute"
+        bottom="0"
+        left="0"
+        px={6}
+        py={5}
+      >
+        <Flex>
+          <Flex
+            w="1.5rem"
+            fill="none"
+            stroke="currentColor"
+            {...{
+              viewBox: '0 0 24 24',
+            }}
+            size={[10, 10]}
+            p={2}
+            align="center"
+            justify="center"
+            bg={isDark ? 'gray.700' : 'gray.200'}
+            rounded="full"
+            color={isDark ? 'gray.400' : 'gray.500'}
+            as="svg"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+            />
+          </Flex>
+          <Box ml={4}>
+            <Heading as="h6" fontSize="lg" fontWeight="medium">
+              Someone
+            </Heading>
+            <Text color={isDark ? 'gray.400' : 'gray.500'}>@someone</Text>
+          </Box>
+        </Flex>
+        <Menu>
+          <MenuButton
+            {...{
+              variantColor: 'transparent',
+            }}
+            _focus={{
+              outline: 'none',
+            }}
+            color={isDark ? 'gray.500' : 'gray.400'}
+          >
+            <svg
+              width="1.5rem"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M8 9l4-4 4 4m0 6l-4 4-4-4"
+              />
+            </svg>
+          </MenuButton>
+          <MenuList mb={3}>
+            <MenuItem>Settings</MenuItem>
+            <MenuItem>Upgrade</MenuItem>
+            <MenuItem>Logout</MenuItem>
+            <MenuItem onClick={toggleColorMode}>Switch to Dark Mode</MenuItem>
+          </MenuList>
+        </Menu>
+      </Flex>
+    </Box>
+  );
+};

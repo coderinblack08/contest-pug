@@ -20,6 +20,7 @@ import React from 'react';
 import { DarkModeSwitch } from '../DarkModeSwitch';
 import { Container } from '../helpers/Container';
 import { LogoComponent } from '../static/LogoComponent';
+import { CustomLink } from '../helpers/CustomLink';
 
 export const Navbar: React.FC<{}> = () => {
   const router = useRouter();
@@ -59,14 +60,26 @@ export const Navbar: React.FC<{}> = () => {
                 />
                 <MenuList>
                   <MenuGroup title="Our Message">
-                    <MenuItem>Landing Page</MenuItem>
-                    <MenuItem>Our Goals</MenuItem>
-                    <MenuItem>Open Source</MenuItem>
+                    <MenuItem>
+                      <CustomLink href="/" text="Landing Page" />
+                    </MenuItem>
+                    <MenuItem>
+                      <CustomLink href="/" text="Our Goals" />
+                    </MenuItem>
+                    <MenuItem>
+                      <CustomLink href="/" text="Open Source" />
+                    </MenuItem>
                   </MenuGroup>
                   <MenuDivider />
-                  <MenuItem>Our Team</MenuItem>
-                  <MenuItem>Login</MenuItem>
-                  <MenuItem>Register</MenuItem>
+                  <MenuItem>
+                    <CustomLink href="/team" text="Our Team" />
+                  </MenuItem>
+                  <MenuItem>
+                    <CustomLink href="/login" text="Login" />
+                  </MenuItem>
+                  <MenuItem>
+                    <CustomLink href="/register" text="Register" />
+                  </MenuItem>
                   <MenuItem onClick={toggleColorModeCookie}>
                     Toggle
                     {` ${colorMode[0].toUpperCase()}${colorMode.slice(1)}`}
@@ -98,11 +111,7 @@ export const Navbar: React.FC<{}> = () => {
                   <MenuItem>Open Source</MenuItem>
                 </MenuList>
               </Menu>
-              <NextLink href="/team">
-                <Link mr={8} tabIndex={0}>
-                  Our Team
-                </Link>
-              </NextLink>
+              <CustomLink href="/team" text="Our Team" mr={8} tabIndex={0} />
               <NextLink href="/login">
                 <Link mr={8} tabIndex={0}>
                   Login
