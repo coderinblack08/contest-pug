@@ -48,12 +48,12 @@ const Register: React.FC<{}> = () => {
         >
           {({ isSubmitting }) => (
             <Form>
-              <Stack height="70vh" justify="center">
+              <Stack py="8vh" justify="center">
                 <Heading as="h4" fontWeight="extrabold">
                   Register Account
                 </Heading>
                 <Text color="gray.500">
-                  <NextLink href="/forgot-password">
+                  <NextLink href="/login">
                     <Link color="blue.400" as="span">
                       Already have an account?&nbsp;
                     </Link>

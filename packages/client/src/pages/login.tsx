@@ -48,7 +48,7 @@ const Register: React.FC<{}> = () => {
         >
           {({ isSubmitting }) => (
             <Form>
-              <Stack height="70vh" justify="center">
+              <Stack py="10vh" justify="center">
                 <Heading as="h4" fontWeight="extrabold">
                   Account Login
                 </Heading>

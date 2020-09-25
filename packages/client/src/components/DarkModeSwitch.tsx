@@ -1,7 +1,7 @@
 import { IconButton, useColorMode } from '@chakra-ui/core';
 import React from 'react';
 
-export const DarkModeSwitch = () => {
+export const DarkModeSwitch = (props: any) => {
   const { colorMode, toggleColorMode } = useColorMode();
   const isDark = colorMode === 'dark';
   const toggleColorModeCookie = () => {
@@ -16,6 +16,7 @@ export const DarkModeSwitch = () => {
       p={3}
       bg={!isDark ? 'white' : 'gray.800'}
       size={8 as any}
+      {...props}
     />
   );
 };

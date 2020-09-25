@@ -7,6 +7,7 @@ import { LoginArgs } from '../types/graphql/inputs/LoginArgs';
 import { MyContext } from '../types/MyContext';
 import { User } from '../entity/User';
 import { parseYupErrors } from '../utils/parseYupErrors';
+import { cookie_name } from '../constants';
 
 @Resolver()
 export class UserResolver {
@@ -66,5 +67,20 @@ export class UserResolver {
     }
     req.session.userId = user.id;
     return { user };
+  }
+
+  @Mutation(() => Boolean)
+  async logout(@Ctx() { req, res }: MyContext) {
+    return new Promise((resolve) => {
+      req.session.destroy((err) => {
+        if (err) {
+          console.error(err);
+          resolve(false);
+          return;
+        }
+        res.clearCookie(cookie_name);
+        resolve(true);
+      });
+    });
   }
 }

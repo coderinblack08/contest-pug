@@ -7,21 +7,40 @@ import {
   MenuButton,
   MenuItem,
   MenuList,
+  Skeleton,
   Text,
   useColorMode,
 } from '@chakra-ui/core';
-import React from 'react';
+import { useRouter } from 'next/router';
+import React, { useEffect, useState } from 'react';
+import {
+  MeDocument,
+  MeQuery,
+  useLogoutMutation,
+  useMeQuery,
+} from '../../generated/graphql';
+import { DarkModeSwitch } from '../DarkModeSwitch';
 import { LogoComponent } from '../static/LogoComponent';
 
 export const Sidenav: React.FC<{}> = () => {
-  const { colorMode, toggleColorMode } = useColorMode();
+  const [loading, setLoading] = useState(true);
+  const router = useRouter();
+  const [logout] = useLogoutMutation();
+  const { data } = useMeQuery();
+  const { colorMode } = useColorMode();
   const isDark = colorMode === 'dark';
+
+  useEffect(() => {
+    setTimeout(() => setLoading(false), 500);
+  }, []);
+
   return (
     <Box
       w={['280px', '320px']}
+      display={['none', 'none', 'none', 'block']}
       h="100vh"
       bg={isDark ? 'gray.700' : 'white'}
-      borderRightColor={isDark ? 'gray.600' : 'gray.100'}
+      borderRightColor={isDark ? 'gray.700' : 'gray.100'}
       borderRightStyle="solid"
       borderRightWidth={1}
       p={6}
@@ -141,8 +160,8 @@ export const Sidenav: React.FC<{}> = () => {
         justify="space-between"
         w={['280px', '320px']}
         bg={isDark ? 'gray.800' : 'gray.50'}
-        borderRightColor={isDark ? 'gray.600' : 'gray.100'}
-        borderTopColor={isDark ? 'gray.600' : 'gray.100'}
+        borderRightColor={isDark ? 'gray.800' : 'gray.100'}
+        borderTopColor={isDark ? 'gray.800' : 'gray.100'}
         borderRightStyle="solid"
         borderTopStyle="solid"
         borderRightWidth={1}
@@ -150,7 +169,7 @@ export const Sidenav: React.FC<{}> = () => {
         pos="absolute"
         bottom="0"
         left="0"
-        px={6}
+        px={4}
         py={5}
       >
         <Flex>
@@ -179,43 +198,71 @@ export const Sidenav: React.FC<{}> = () => {
           </Flex>
           <Box ml={4}>
             <Heading as="h6" fontSize="lg" fontWeight="medium">
-              Someone
+              {loading || !data?.me ? (
+                <Skeleton w={32} h={4} />
+              ) : (
+                data?.me?.name
+              )}
             </Heading>
-            <Text color={isDark ? 'gray.400' : 'gray.500'}>@someone</Text>
+            <Text color={isDark ? 'gray.400' : 'gray.500'}>
+              {loading || !data?.me ? (
+                <Skeleton w={40} h={4} mt={2} />
+              ) : (
+                `@${data?.me?.name.toLowerCase().replace(/\s/, '')}`
+              )}
+            </Text>
           </Box>
         </Flex>
-        <Menu>
-          <MenuButton
-            {...{
-              variantColor: 'transparent',
-            }}
-            _focus={{
-              outline: 'none',
-            }}
+        <Flex>
+          <DarkModeSwitch
             color={isDark ? 'gray.500' : 'gray.400'}
-          >
-            <svg
-              width="1.5rem"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              xmlns="http://www.w3.org/2000/svg"
+            bg="transparent"
+          />
+          <Menu>
+            <MenuButton
+              _focus={{ outline: 'none' }}
+              {...{ variantColor: 'transparent' }}
+              color={isDark ? 'gray.500' : 'gray.400'}
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M8 9l4-4 4 4m0 6l-4 4-4-4"
-              />
-            </svg>
-          </MenuButton>
-          <MenuList mb={3}>
-            <MenuItem>Settings</MenuItem>
-            <MenuItem>Upgrade</MenuItem>
-            <MenuItem>Logout</MenuItem>
-            <MenuItem onClick={toggleColorMode}>Switch to Dark Mode</MenuItem>
-          </MenuList>
-        </Menu>
+              <svg
+                width="1.5rem"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M8 9l4-4 4 4m0 6l-4 4-4-4"
+                />
+              </svg>
+            </MenuButton>
+            <MenuList mb={3}>
+              <MenuItem>Settings</MenuItem>
+              <MenuItem>Upgrade</MenuItem>
+              <MenuItem
+                onClick={async () => {
+                  await logout({
+                    update: (cache) => {
+                      cache.writeQuery<MeQuery>({
+                        query: MeDocument,
+                        data: {
+                          __typename: 'Query',
+                          me: null,
+                        },
+                      });
+                    },
+                  });
+                  router.push('/login');
+                }}
+              >
+                Logout
+              </MenuItem>
+            </MenuList>
+          </Menu>
+        </Flex>
       </Flex>
     </Box>
   );
