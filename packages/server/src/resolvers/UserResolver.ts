@@ -1,13 +1,15 @@
+import { v4 } from 'uuid';
 import argon from 'argon2';
+import { registerSchema } from '@contest-pug/common';
 import { Arg, Ctx, Mutation, Query, Resolver } from 'type-graphql';
 import { RegisterArgs } from '../types/graphql/inputs/RegisterArgs';
-import { registerSchema } from '@contest-pug/common';
-import { UserResponse } from '../types/graphql/UserResponse';
+import { cookie_name, forgot_password_prefix } from '../constants';
 import { LoginArgs } from '../types/graphql/inputs/LoginArgs';
+import { UserResponse } from '../types/graphql/UserResponse';
+import { parseYupErrors } from '../utils/parseYupErrors';
+import { sendEmail } from '../utils/sendEmail';
 import { MyContext } from '../types/MyContext';
 import { User } from '../entity/User';
-import { parseYupErrors } from '../utils/parseYupErrors';
-import { cookie_name } from '../constants';
 
 @Resolver()
 export class UserResolver {
@@ -82,5 +84,90 @@ export class UserResolver {
         resolve(true);
       });
     });
+  }
+
+  @Mutation(() => Boolean)
+  async forgotPassword(
+    @Arg('email') email: string,
+    @Ctx() { redis }: MyContext
+  ) {
+    const user = await User.findOne({ where: { email } });
+    if (!user) {
+      return true;
+    }
+    const token = v4();
+    const url = `http://localhost:3000/change-password/${token}`;
+    await redis.set(
+      forgot_password_prefix + token,
+      user.id,
+      'ex',
+      1000 * 60 * 60 * 24
+    );
+    await sendEmail(
+      email,
+      'Contest Pug: Change Password',
+      `
+        Hello there! It seems that you have requested to change you password! (Expries in 1 day)
+        Please click here to do so: <a href="${url}">${url}</a>
+      `
+    );
+    return true;
+  }
+
+  @Mutation(() => UserResponse)
+  async changePassword(
+    @Arg('token') token: string,
+    @Arg('newPassword') newPassword: string,
+    @Ctx() { redis, req }: MyContext
+  ): Promise<UserResponse> {
+    if (newPassword.length < 8) {
+      return {
+        errors: [
+          {
+            field: 'password',
+            message: 'Your passowrd is under the 8 character limit',
+          },
+        ],
+      };
+    }
+    if (newPassword.length > 128) {
+      return {
+        errors: [
+          {
+            field: 'password',
+            message: 'Your passowrd is over the 128 character limit',
+          },
+        ],
+      };
+    }
+    const userId = await redis.get(forgot_password_prefix + token);
+    if (!userId) {
+      return {
+        errors: [
+          {
+            field: 'token',
+            message: 'Your token is invalid or has expired',
+          },
+        ],
+      };
+    }
+    const user = await User.findOne(userId);
+    if (!user) {
+      return {
+        errors: [
+          {
+            field: 'token',
+            message: 'User no longer exists',
+          },
+        ],
+      };
+    }
+    await User.update(
+      { id: parseInt(userId) },
+      { password: await argon.hash(newPassword) }
+    );
+    await redis.del(forgot_password_prefix + token);
+    req.session.userId = user.id;
+    return { user };
   }
 }
