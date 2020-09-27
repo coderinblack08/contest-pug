@@ -15,10 +15,11 @@ import React from 'react';
 import { CustomLink } from '../../components/helpers/CustomLink';
 import { Layout } from '../../components/helpers/Layout';
 import InputField from '../../components/register/InputField';
-import { useMeQuery } from '../../generated/graphql';
+import { useMeQuery, useUpdateUserMutation } from '../../generated/graphql';
 
 const Settings: React.FC<{}> = () => {
-  const { data: me } = useMeQuery();
+  const [updateUser] = useUpdateUserMutation();
+  const { data: me, refetch } = useMeQuery();
   const { colorMode } = useColorMode();
   const isDark = colorMode === 'dark';
   return (
@@ -26,7 +27,10 @@ const Settings: React.FC<{}> = () => {
       <Box px={[5, 10, 12]}>
         <Formik
           initialValues={{ name: me?.me?.name }}
-          onSubmit={async () => {}}
+          onSubmit={async (values) => {
+            await updateUser({ variables: { name: values.name! } });
+            await refetch();
+          }}
           enableReinitialize
         >
           {({ isSubmitting }) => (
