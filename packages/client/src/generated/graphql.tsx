@@ -9,6 +9,8 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
+  /** The `Upload` scalar type represents a file upload. */
+  Upload: any;
 };
 
 export type Query = {
@@ -22,6 +24,7 @@ export type User = {
   id: Scalars['Int'];
   name: Scalars['String'];
   email: Scalars['String'];
+  profilePicture: Scalars['String'];
   createdAt: Scalars['String'];
   updatedAt: Scalars['String'];
 };
@@ -34,6 +37,7 @@ export type Mutation = {
   forgotPassword: Scalars['Boolean'];
   changePassword: UserResponse;
   updateUser: Scalars['Boolean'];
+  uploadProfilePicture: Scalars['Boolean'];
 };
 
 
@@ -62,6 +66,11 @@ export type MutationUpdateUserArgs = {
   name: Scalars['String'];
 };
 
+
+export type MutationUploadProfilePictureArgs = {
+  picture: Scalars['Upload'];
+};
+
 export type UserResponse = {
   __typename?: 'UserResponse';
   errors?: Maybe<Array<FieldError>>;
@@ -85,6 +94,7 @@ export type LoginArgs = {
   password: Scalars['String'];
 };
 
+
 export type RegularErrorFragment = (
   { __typename?: 'FieldError' }
   & Pick<FieldError, 'field' | 'message'>
@@ -92,7 +102,7 @@ export type RegularErrorFragment = (
 
 export type RegularUserFragment = (
   { __typename?: 'User' }
-  & Pick<User, 'id' | 'name' | 'email'>
+  & Pick<User, 'id' | 'name' | 'email' | 'profilePicture'>
 );
 
 export type UserResponseFragment = (
@@ -174,6 +184,16 @@ export type UpdateUserMutation = (
   & Pick<Mutation, 'updateUser'>
 );
 
+export type UploadProfilePictureMutationVariables = Exact<{
+  picture: Scalars['Upload'];
+}>;
+
+
+export type UploadProfilePictureMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'uploadProfilePicture'>
+);
+
 export type HelloQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -204,6 +224,7 @@ export const RegularUserFragmentDoc = gql`
   id
   name
   email
+  profilePicture
 }
     `;
 export const UserResponseFragmentDoc = gql`
@@ -403,6 +424,36 @@ export function useUpdateUserMutation(baseOptions?: Apollo.MutationHookOptions<U
 export type UpdateUserMutationHookResult = ReturnType<typeof useUpdateUserMutation>;
 export type UpdateUserMutationResult = Apollo.MutationResult<UpdateUserMutation>;
 export type UpdateUserMutationOptions = Apollo.BaseMutationOptions<UpdateUserMutation, UpdateUserMutationVariables>;
+export const UploadProfilePictureDocument = gql`
+    mutation UploadProfilePicture($picture: Upload!) {
+  uploadProfilePicture(picture: $picture)
+}
+    `;
+export type UploadProfilePictureMutationFn = Apollo.MutationFunction<UploadProfilePictureMutation, UploadProfilePictureMutationVariables>;
+
+/**
+ * __useUploadProfilePictureMutation__
+ *
+ * To run a mutation, you first call `useUploadProfilePictureMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUploadProfilePictureMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [uploadProfilePictureMutation, { data, loading, error }] = useUploadProfilePictureMutation({
+ *   variables: {
+ *      picture: // value for 'picture'
+ *   },
+ * });
+ */
+export function useUploadProfilePictureMutation(baseOptions?: Apollo.MutationHookOptions<UploadProfilePictureMutation, UploadProfilePictureMutationVariables>) {
+        return Apollo.useMutation<UploadProfilePictureMutation, UploadProfilePictureMutationVariables>(UploadProfilePictureDocument, baseOptions);
+      }
+export type UploadProfilePictureMutationHookResult = ReturnType<typeof useUploadProfilePictureMutation>;
+export type UploadProfilePictureMutationResult = Apollo.MutationResult<UploadProfilePictureMutation>;
+export type UploadProfilePictureMutationOptions = Apollo.BaseMutationOptions<UploadProfilePictureMutation, UploadProfilePictureMutationVariables>;
 export const HelloDocument = gql`
     query Hello {
   hello

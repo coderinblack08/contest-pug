@@ -12,15 +12,21 @@ import {
 } from '@chakra-ui/core';
 import { Formik, Form } from 'formik';
 import React from 'react';
+import Dropzone from 'react-dropzone';
 import { CustomLink } from '../../components/helpers/CustomLink';
 import { Layout } from '../../components/helpers/Layout';
 import InputField from '../../components/register/InputField';
-import { useMeQuery, useUpdateUserMutation } from '../../generated/graphql';
+import {
+  useMeQuery,
+  useUpdateUserMutation,
+  useUploadProfilePictureMutation,
+} from '../../generated/graphql';
 
 const Settings: React.FC<{}> = () => {
   const [updateUser] = useUpdateUserMutation();
   const { data: me, refetch } = useMeQuery();
   const { colorMode } = useColorMode();
+  const [uploadProfilePicture] = useUploadProfilePictureMutation();
   const isDark = colorMode === 'dark';
   return (
     <Layout>
@@ -81,18 +87,38 @@ const Settings: React.FC<{}> = () => {
                   </Box>
                   <Box my={5}>
                     <Text fontWeight="medium">Profile Picture</Text>
-                    <Flex align="center" mt={1}>
-                      <Avatar size="sm" />
-                      <Text
-                        fontWeight="medium"
-                        ml={2}
-                        fontSize="md"
-                        cursor="pointer"
-                        color={isDark ? 'gray.300' : 'gray.600'}
-                      >
-                        Change Picture
-                      </Text>
-                    </Flex>
+                    <Dropzone
+                      accept="image/*"
+                      onDrop={async ([file]) => {
+                        await uploadProfilePicture({
+                          variables: { picture: file },
+                        });
+                        await refetch();
+                      }}
+                    >
+                      {({ getRootProps, getInputProps }) => (
+                        <section>
+                          <div {...getRootProps()}>
+                            <input {...getInputProps()} />
+                            <Flex align="center" mt={1}>
+                              <Avatar
+                                size="sm"
+                                src={`http://localhost:4000/images/${me?.me?.profilePicture}`}
+                              />
+                              <Text
+                                fontWeight="medium"
+                                ml={2}
+                                fontSize="md"
+                                cursor="pointer"
+                                color={isDark ? 'gray.300' : 'gray.600'}
+                              >
+                                Change Picture
+                              </Text>
+                            </Flex>
+                          </div>
+                        </section>
+                      )}
+                    </Dropzone>
                   </Box>
                   <CustomLink
                     text="Change Password"

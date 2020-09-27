@@ -13,6 +13,7 @@
     "@chakra-ui/core": "^0.8.0",
     "@emotion/core": "^10.0.35",
     "@emotion/styled": "^10.0.27",
+    "apollo-upload-client": "^14.1.2",
     "emotion-theming": "^10.0.27",
     "formik": "^2.1.5",
     "framer-motion": "^2.7.1",
@@ -24,13 +25,15 @@
     "next-images": "^1.5.0",
     "nprogress": "^0.2.0",
     "react": "^16.13.1",
-    "react-dom": "^16.13.1"
+    "react-dom": "^16.13.1",
+    "react-dropzone": "^11.2.0"
   },
   "devDependencies": {
     "@graphql-codegen/cli": "1.17.8",
     "@graphql-codegen/typescript": "1.17.9",
     "@graphql-codegen/typescript-operations": "^1.17.8",
     "@graphql-codegen/typescript-react-apollo": "^2.0.6",
+    "@types/apollo-upload-client": "^14.1.0",
     "@types/node": "^14.11.2",
     "@types/nprogress": "^0.2.0",
     "@typescript-eslint/eslint-plugin": "^4.2.0",

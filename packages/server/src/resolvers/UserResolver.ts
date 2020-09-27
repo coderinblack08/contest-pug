@@ -170,4 +170,10 @@ export class UserResolver {
     req.session.userId = user.id;
     return { user };
   }
+
+  @Mutation(() => Boolean)
+  async updateUser(@Arg('name') name: string, @Ctx() { req }: MyContext) {
+    await User.update(req.session.userId, { name });
+    return true;
+  }
 }

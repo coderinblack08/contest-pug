@@ -50,7 +50,12 @@ export const Sidenav: React.FC<{}> = () => {
       <Flex px={2} pb={5} mt={-2}>
         <LogoComponent tag={false} />
       </Flex>
-      <Flex align="center" p={4}>
+      <Flex
+        align="center"
+        p={4}
+        onClick={() => router.push('/dashboard')}
+        cursor="pointer"
+      >
         <Image
           w="1.5rem"
           fill="none"
@@ -77,7 +82,12 @@ export const Sidenav: React.FC<{}> = () => {
           Dashboard
         </Text>
       </Flex>
-      <Flex align="center" p={4}>
+      <Flex
+        align="center"
+        p={4}
+        onClick={() => router.push('/search')}
+        cursor="pointer"
+      >
         <Image
           w="1.5rem"
           fill="none"
@@ -104,7 +114,12 @@ export const Sidenav: React.FC<{}> = () => {
           Search
         </Text>
       </Flex>
-      <Flex align="center" p={4}>
+      <Flex
+        align="center"
+        p={4}
+        onClick={() => router.push('/contests')}
+        cursor="pointer"
+      >
         <Image
           w="1.5rem"
           fill="none"
@@ -131,7 +146,12 @@ export const Sidenav: React.FC<{}> = () => {
           Contests
         </Text>
       </Flex>
-      <Flex align="center" p={4}>
+      <Flex
+        align="center"
+        p={4}
+        onClick={() => router.push('/scores')}
+        cursor="pointer"
+      >
         <Image
           w="1.5rem"
           fill="none"
@@ -175,29 +195,6 @@ export const Sidenav: React.FC<{}> = () => {
         py={5}
       >
         <Flex>
-          {/* <Flex
-            w="1.5rem"
-            fill="none"
-            stroke="currentColor"
-            {...{
-              viewBox: '0 0 24 24',
-            }}
-            size={[10, 10]}
-            p={2}
-            align="center"
-            justify="center"
-            bg={isDark ? 'gray.700' : 'gray.200'}
-            rounded="full"
-            color={isDark ? 'gray.400' : 'gray.500'}
-            as="svg"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-            />
-          </Flex> */}
           <Avatar
             w="10"
             h="10"

@@ -3,6 +3,7 @@ import 'reflect-metadata';
 import cors from 'cors';
 import express from 'express';
 import { createConnection, getConnectionOptions } from 'typeorm';
+import { graphqlUploadExpress } from 'graphql-upload';
 import { cookie_name, port, __prod__ } from './constants';
 import { ApolloServer } from 'apollo-server-express';
 import { buildSchema } from 'type-graphql';
@@ -11,6 +12,8 @@ import { UserResolver } from './resolvers/UserResolver';
 import session from 'express-session';
 import connectRedis from 'connect-redis';
 import Redis from 'ioredis';
+import { ProfilePictureResolver } from './resolvers/ProfilePictureResolver';
+import path from 'path';
 
 const main = async () => {
   const connectionOptions = await getConnectionOptions();
@@ -54,12 +57,17 @@ const main = async () => {
     })
   );
 
+  app.use(graphqlUploadExpress({ maxFileSize: 10000000, maxFiles: 10 }));
+
+  app.use('/images', express.static(path.join(__dirname, '../images')));
+
   const apolloServer = new ApolloServer({
     schema: await buildSchema({
-      resolvers: [HelloResolver, UserResolver],
+      resolvers: [HelloResolver, UserResolver, ProfilePictureResolver],
       validate: false,
     }),
     context: ({ req, res }) => ({ req, res, redis }),
+    uploads: false,
   });
 
   apolloServer.applyMiddleware({ app, cors: false });
