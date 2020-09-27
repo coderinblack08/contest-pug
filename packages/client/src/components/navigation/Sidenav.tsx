@@ -1,4 +1,5 @@
 import {
+  Avatar,
   Box,
   Flex,
   Heading,
@@ -20,6 +21,7 @@ import {
   useMeQuery,
 } from '../../generated/graphql';
 import { DarkModeSwitch } from '../DarkModeSwitch';
+import { CustomLink } from '../helpers/CustomLink';
 import { LogoComponent } from '../static/LogoComponent';
 
 export const Sidenav: React.FC<{}> = () => {
@@ -173,7 +175,7 @@ export const Sidenav: React.FC<{}> = () => {
         py={5}
       >
         <Flex>
-          <Flex
+          {/* <Flex
             w="1.5rem"
             fill="none"
             stroke="currentColor"
@@ -195,7 +197,17 @@ export const Sidenav: React.FC<{}> = () => {
               strokeWidth={2}
               d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z"
             />
-          </Flex>
+          </Flex> */}
+          <Avatar
+            w="10"
+            h="10"
+            rounded="full"
+            src={
+              loading
+                ? undefined
+                : `http://localhost:4000/images/${data?.me?.profilePicture}`
+            }
+          />
           <Box ml={4}>
             <Heading as="h6" fontSize="lg" fontWeight="medium">
               {loading || !data?.me ? (
@@ -240,7 +252,9 @@ export const Sidenav: React.FC<{}> = () => {
               </svg>
             </MenuButton>
             <MenuList mb={3}>
-              <MenuItem>Settings</MenuItem>
+              <MenuItem>
+                <CustomLink text="Settings" href="/settings" />
+              </MenuItem>
               <MenuItem>Upgrade</MenuItem>
               <MenuItem
                 onClick={async () => {
