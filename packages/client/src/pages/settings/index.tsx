@@ -5,7 +5,6 @@ import {
   Button,
   Text,
   Flex,
-  Icon,
   Tooltip,
   Avatar,
   useColorMode,
@@ -63,14 +62,29 @@ const Settings: React.FC<{}> = () => {
                 >
                   <Box mb={5}>
                     <Flex align="center">
-                      <Text fontWeight="medium">Email Address</Text>
+                      <Text fontWeight="medium" mr={1}>
+                        Email Address
+                      </Text>
                       <Tooltip
                         aria-label="Not Editable"
                         label="Not Editable"
                         placement="bottom"
                         hasArrow
                       >
-                        <Icon name="info" w={3} ml={1} />
+                        <svg
+                          width="1rem"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                          />
+                        </svg>
                       </Tooltip>
                     </Flex>
                     <Text color={isDark ? 'gray.400' : 'gray.500'}>
@@ -97,7 +111,7 @@ const Settings: React.FC<{}> = () => {
                       }}
                     >
                       {({ getRootProps, getInputProps }) => (
-                        <section>
+                        <Box>
                           <div {...getRootProps()}>
                             <input {...getInputProps()} />
                             <Flex align="center" mt={1}>
@@ -116,7 +130,7 @@ const Settings: React.FC<{}> = () => {
                               </Text>
                             </Flex>
                           </div>
-                        </section>
+                        </Box>
                       )}
                     </Dropzone>
                   </Box>
