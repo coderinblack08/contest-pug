@@ -21,11 +21,13 @@ import {
 import { AnimatePresence, motion } from 'framer-motion';
 import { Adjustments } from 'heroicons-react';
 import Head from 'next/head';
+import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import { Layout } from '../components/helpers/Layout';
 import { useMeQuery } from '../generated/graphql';
 
 const Dashboard: React.FC<{}> = () => {
+  const router = useRouter();
   const { colorMode } = useColorMode();
   const isDark = colorMode === 'dark';
   const [loading, setLoading] = useState(true);
@@ -77,6 +79,7 @@ const Dashboard: React.FC<{}> = () => {
             rightIcon="arrow-forward"
             variantColor="primary"
             variant="outline"
+            onClick={() => router.push('/create-contest')}
           >
             Create
           </Button>
@@ -142,7 +145,7 @@ const Dashboard: React.FC<{}> = () => {
       <Box p={8}>
         <Flex justify="space-between">
           <Heading fontSize="xl" fontWeight="semibold">
-            Upcoming
+            Upcoming Contests
           </Heading>
           <Flex align="center" onClick={() => setModalOpen(true)}>
             <Adjustments size={20} />

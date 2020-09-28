@@ -5,6 +5,8 @@ import {
   FormLabel,
   Input,
   FormErrorMessage,
+  InputGroup,
+  InputLeftAddon,
 } from '@chakra-ui/core';
 
 type InputFieldProps = InputHTMLAttributes<HTMLInputElement> & {
@@ -12,29 +14,32 @@ type InputFieldProps = InputHTMLAttributes<HTMLInputElement> & {
   label: string;
 };
 
-const InputField: React.FC<InputFieldProps> = ({
+const InputFieldGroup: React.FC<InputFieldProps> = ({
   label,
   size: _,
   placeholder,
+  children,
   ...props
 }) => {
   const [field, { error }] = useField(props);
   return (
     <FormControl isInvalid={!!error}>
       <FormLabel htmlFor={field.value}>{label}</FormLabel>
-      <Input
-        {...field}
-        {...props}
-        id={field.name}
-        placeholder={placeholder}
-        _focus={{
-          shadow: 'outline',
-        }}
-        mt={1}
-      />
+      <InputGroup mt={1}>
+        {children}
+        <Input
+          {...field}
+          {...props}
+          id={field.name}
+          placeholder={placeholder}
+          _focus={{
+            shadow: 'outline',
+          }}
+        />
+      </InputGroup>
       {error ? <FormErrorMessage>{error}</FormErrorMessage> : null}
     </FormControl>
   );
 };
 
-export default InputField;
+export default InputFieldGroup;

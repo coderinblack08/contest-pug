@@ -6,7 +6,9 @@ import {
   BaseEntity,
   CreateDateColumn,
   UpdateDateColumn,
+  OneToMany,
 } from 'typeorm';
+import { Contest } from './Contest';
 
 @Entity('users')
 @ObjectType()
@@ -29,6 +31,9 @@ export class User extends BaseEntity {
   @Field()
   @Column({ nullable: true })
   profilePicture?: string;
+
+  @OneToMany(() => Contest, (contest) => contest.user)
+  contests!: Contest[];
 
   @Field(() => String)
   @CreateDateColumn()
