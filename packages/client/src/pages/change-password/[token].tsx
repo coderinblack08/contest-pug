@@ -5,7 +5,7 @@ import React, { useState } from 'react';
 import Wrapper from '../../components/helpers/Wrapper';
 import { Navbar } from '../../components/navigation/Navbar';
 import { useChangePasswordMutation } from '../../generated/graphql';
-import InputField from '../../components/register/InputField';
+import InputField from '../../components/forms/InputField';
 import { toErrorMap } from '../../utils/toErrorMap';
 
 const ChangePassword: NextPage<{ token: string }> = ({ token }) => {

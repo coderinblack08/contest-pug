@@ -1,6 +1,7 @@
+import * as Yup from 'yup';
 import { v4 } from 'uuid';
 import argon from 'argon2';
-import { registerSchema } from '@contest-pug/common';
+import { registerSchema, registerObject } from '@contest-pug/common';
 import { Arg, Ctx, Mutation, Query, Resolver } from 'type-graphql';
 import { RegisterArgs } from '../types/graphql/inputs/RegisterArgs';
 import { cookie_name, forgot_password_prefix } from '../constants';
@@ -173,6 +174,8 @@ export class UserResolver {
 
   @Mutation(() => Boolean)
   async updateUser(@Arg('name') name: string, @Ctx() { req }: MyContext) {
+    const validation = Yup.object().shape({ name: registerObject.name });
+    await validation.validate({ name });
     await User.update(req.session.userId, { name });
     return true;
   }

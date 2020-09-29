@@ -14,6 +14,7 @@ import connectRedis from 'connect-redis';
 import Redis from 'ioredis';
 import { ProfilePictureResolver } from './resolvers/ProfilePictureResolver';
 import path from 'path';
+import { ContestResolver } from './resolvers/ContestResolver';
 
 const main = async () => {
   const connectionOptions = await getConnectionOptions();
@@ -63,7 +64,12 @@ const main = async () => {
 
   const apolloServer = new ApolloServer({
     schema: await buildSchema({
-      resolvers: [HelloResolver, UserResolver, ProfilePictureResolver],
+      resolvers: [
+        HelloResolver,
+        UserResolver,
+        ContestResolver,
+        ProfilePictureResolver,
+      ],
       validate: false,
     }),
     context: ({ req, res }) => ({ req, res, redis }),

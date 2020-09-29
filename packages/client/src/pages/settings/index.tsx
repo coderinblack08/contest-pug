@@ -14,7 +14,7 @@ import React from 'react';
 import Dropzone from 'react-dropzone';
 import { CustomLink } from '../../components/helpers/CustomLink';
 import { Layout } from '../../components/helpers/Layout';
-import InputField from '../../components/register/InputField';
+import InputField from '../../components/forms/InputField';
 import {
   useMeQuery,
   useUpdateUserMutation,

@@ -10,6 +10,7 @@ export const Layout: React.FC<{}> = ({ children }) => {
       <Sidenav />
       <Box
         h="100vh"
+        overflow="scroll"
         bg={isDark ? 'gray.800' : 'gray.50'}
         w={['100%', '100%', '100%', 'calc(100vw - 320px)']}
       >

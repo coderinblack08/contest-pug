@@ -1,6 +1,6 @@
 import * as Yup from 'yup';
 
-export const errors = {
+const errors = {
   min: (field: string, limit = 2) =>
     `Your ${field} is under the ${limit} character limit`,
   max: (field: string) => `Your ${field} is over the 128 character limit`,
@@ -8,7 +8,7 @@ export const errors = {
   email: 'Your email address is invalid',
 };
 
-export const registerSchema = Yup.object().shape({
+export const registerObject = {
   name: Yup.string()
     .min(2, errors.min('name'))
     .max(128, errors.max('name'))
@@ -21,9 +21,9 @@ export const registerSchema = Yup.object().shape({
     .min(8, errors.min('password', 8))
     .max(128, errors.max('password'))
     .required(errors.required('password')),
-});
+};
 
-export const loginSchema = Yup.object().shape({
+const loginObject = {
   email: Yup.string()
     .email(errors.email)
     .max(128, errors.max('email address'))
@@ -32,4 +32,8 @@ export const loginSchema = Yup.object().shape({
     .min(8, errors.min('password', 8))
     .max(128, errors.max('password'))
     .required(errors.required('password')),
-});
+};
+
+export const registerSchema = Yup.object().shape(registerObject);
+
+export const loginSchema = Yup.object().shape(loginObject);

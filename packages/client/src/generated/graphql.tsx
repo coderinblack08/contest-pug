@@ -38,6 +38,7 @@ export type Mutation = {
   changePassword: UserResponse;
   updateUser: Scalars['Boolean'];
   uploadProfilePicture: Scalars['Boolean'];
+  createContest: ContestResponse;
 };
 
 
@@ -71,6 +72,11 @@ export type MutationUploadProfilePictureArgs = {
   picture: Scalars['Upload'];
 };
 
+
+export type MutationCreateContestArgs = {
+  options: ContestArgs;
+};
+
 export type UserResponse = {
   __typename?: 'UserResponse';
   errors?: Maybe<Array<FieldError>>;
@@ -94,6 +100,46 @@ export type LoginArgs = {
   password: Scalars['String'];
 };
 
+
+export type ContestResponse = {
+  __typename?: 'ContestResponse';
+  errors?: Maybe<Array<FieldError>>;
+  contest?: Maybe<Contest>;
+};
+
+export type Contest = {
+  __typename?: 'Contest';
+  id: Scalars['ID'];
+  name: Scalars['String'];
+  email?: Maybe<Scalars['String']>;
+  website?: Maybe<Scalars['String']>;
+  thumbnail: Scalars['String'];
+  description: Scalars['String'];
+  length: Scalars['Int'];
+  startDate: Scalars['String'];
+  endDate: Scalars['String'];
+  tags: Array<Scalars['String']>;
+  leaderboard: Scalars['Boolean'];
+  private: Scalars['Boolean'];
+  open: Scalars['Boolean'];
+  userId: Scalars['Int'];
+  createdAt: Scalars['String'];
+  updatedAt: Scalars['String'];
+};
+
+export type ContestArgs = {
+  name: Scalars['String'];
+  email?: Maybe<Scalars['String']>;
+  website?: Maybe<Scalars['String']>;
+  thumbnail: Scalars['String'];
+  description: Scalars['String'];
+  length: Scalars['Int'];
+  startDate: Scalars['String'];
+  endDate: Scalars['String'];
+  tags: Array<Scalars['String']>;
+  leaderboard: Scalars['Boolean'];
+  private: Scalars['Boolean'];
+};
 
 export type RegularErrorFragment = (
   { __typename?: 'FieldError' }
@@ -127,6 +173,25 @@ export type ChangePasswordMutation = (
   & { changePassword: (
     { __typename?: 'UserResponse' }
     & UserResponseFragment
+  ) }
+);
+
+export type CreateContestMutationVariables = Exact<{
+  options: ContestArgs;
+}>;
+
+
+export type CreateContestMutation = (
+  { __typename?: 'Mutation' }
+  & { createContest: (
+    { __typename?: 'ContestResponse' }
+    & { errors?: Maybe<Array<(
+      { __typename?: 'FieldError' }
+      & RegularErrorFragment
+    )>>, contest?: Maybe<(
+      { __typename?: 'Contest' }
+      & Pick<Contest, 'id' | 'name'>
+    )> }
   ) }
 );
 
@@ -271,6 +336,44 @@ export function useChangePasswordMutation(baseOptions?: Apollo.MutationHookOptio
 export type ChangePasswordMutationHookResult = ReturnType<typeof useChangePasswordMutation>;
 export type ChangePasswordMutationResult = Apollo.MutationResult<ChangePasswordMutation>;
 export type ChangePasswordMutationOptions = Apollo.BaseMutationOptions<ChangePasswordMutation, ChangePasswordMutationVariables>;
+export const CreateContestDocument = gql`
+    mutation CreateContest($options: ContestArgs!) {
+  createContest(options: $options) {
+    errors {
+      ...RegularError
+    }
+    contest {
+      id
+      name
+    }
+  }
+}
+    ${RegularErrorFragmentDoc}`;
+export type CreateContestMutationFn = Apollo.MutationFunction<CreateContestMutation, CreateContestMutationVariables>;
+
+/**
+ * __useCreateContestMutation__
+ *
+ * To run a mutation, you first call `useCreateContestMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateContestMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createContestMutation, { data, loading, error }] = useCreateContestMutation({
+ *   variables: {
+ *      options: // value for 'options'
+ *   },
+ * });
+ */
+export function useCreateContestMutation(baseOptions?: Apollo.MutationHookOptions<CreateContestMutation, CreateContestMutationVariables>) {
+        return Apollo.useMutation<CreateContestMutation, CreateContestMutationVariables>(CreateContestDocument, baseOptions);
+      }
+export type CreateContestMutationHookResult = ReturnType<typeof useCreateContestMutation>;
+export type CreateContestMutationResult = Apollo.MutationResult<CreateContestMutation>;
+export type CreateContestMutationOptions = Apollo.BaseMutationOptions<CreateContestMutation, CreateContestMutationVariables>;
 export const ForgotPasswordDocument = gql`
     mutation forgotPassword($email: String!) {
   forgotPassword(email: $email)

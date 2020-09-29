@@ -1,0 +1,11 @@
+mutation CreateContest($options: ContestArgs!) {
+  createContest(options: $options) {
+    errors {
+      ...RegularError
+    }
+    contest {
+      id
+      name
+    }
+  }
+}

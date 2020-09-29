@@ -5,6 +5,8 @@ import cookies from 'next-cookies';
 import { Router } from 'next/router';
 import NProgress from 'nprogress';
 import 'nprogress/nprogress.css';
+import 'react-datepicker/dist/react-datepicker.css';
+import '../static/styles/react-datepicker.css';
 import React from 'react';
 import Head from 'next/head';
 import theme from '../theme';

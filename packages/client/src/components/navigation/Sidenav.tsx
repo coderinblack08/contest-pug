@@ -206,20 +206,20 @@ export const Sidenav: React.FC<{}> = () => {
             }
           />
           <Box ml={4}>
-            <Heading as="h6" fontSize="lg" fontWeight="medium">
-              {loading || !data?.me ? (
-                <Skeleton w={32} h={4} />
-              ) : (
-                data?.me?.name
-              )}
-            </Heading>
-            <Text color={isDark ? 'gray.400' : 'gray.500'}>
-              {loading || !data?.me ? (
-                <Skeleton w={40} h={4} mt={2} />
-              ) : (
-                `@${data?.me?.name.toLowerCase().replace(/\s/, '')}`
-              )}
-            </Text>
+            {loading || !data?.me ? (
+              <Skeleton w={32} h={4} />
+            ) : (
+              <Heading as="h6" fontSize="lg" fontWeight="medium">
+                {data?.me?.name}
+              </Heading>
+            )}
+            {loading || !data?.me ? (
+              <Skeleton w={40} h={4} mt={2} />
+            ) : (
+              <Text color={isDark ? 'gray.400' : 'gray.500'}>
+                {`@${data?.me?.name.toLowerCase().replace(/\s/, '')}`}
+              </Text>
+            )}
           </Box>
         </Flex>
         <Flex>

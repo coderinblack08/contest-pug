@@ -14,7 +14,7 @@ import { useRouter } from 'next/router';
 import { toErrorMap } from '../utils/toErrorMap';
 import Wrapper from '../components/helpers/Wrapper';
 import { Navbar } from '../components/navigation/Navbar';
-import InputField from '../components/register/InputField';
+import InputField from '../components/forms/InputField';
 import { useRegisterMutation, MeQuery, MeDocument } from '../generated/graphql';
 
 const Register: React.FC<{}> = () => {
