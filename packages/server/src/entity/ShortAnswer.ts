@@ -1,7 +1,14 @@
 import { Field, ObjectType } from 'type-graphql';
-import { Entity, BaseEntity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Entity,
+  BaseEntity,
+  Column,
+  PrimaryGeneratedColumn,
+  OneToOne,
+} from 'typeorm';
+import { Problem } from './Problems';
 
-@Entity('problems')
+@Entity('shortanswers')
 @ObjectType()
 export class ShortAnswer extends BaseEntity {
   @Field()
@@ -19,4 +26,8 @@ export class ShortAnswer extends BaseEntity {
   @Field({ nullable: true })
   @Column({ nullable: true })
   solution?: string;
+
+  @Field(() => Problem)
+  @OneToOne(() => Problem, (problem) => problem.shortAnswer)
+  problem!: Problem;
 }

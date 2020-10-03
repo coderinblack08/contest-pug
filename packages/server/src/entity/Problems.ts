@@ -5,8 +5,7 @@ import {
   PrimaryColumn,
   ManyToOne,
   OneToOne,
-  JoinColumn,
-  PrimaryGeneratedColumn,
+  Column,
 } from 'typeorm';
 import { Contest } from './Contest';
 import { ShortAnswer } from './ShortAnswer';
@@ -15,14 +14,9 @@ import { ShortAnswer } from './ShortAnswer';
 @ObjectType()
 export class Problem extends BaseEntity {
   @Field()
-  @PrimaryGeneratedColumn()
-  id!: number;
-
-  @Field()
   @PrimaryColumn()
   contestId!: string;
 
-  @Field(() => Contest)
   @ManyToOne(() => Contest, (contest) => contest.stars)
   contest!: Contest;
 
@@ -31,11 +25,16 @@ export class Problem extends BaseEntity {
   index!: number;
 
   @Field()
-  @PrimaryColumn({ default: 0 })
+  @Column({ default: 0 })
   points!: number;
 
+  @Field({ nullable: true })
+  @Column({ nullable: true })
+  shortAnswerId?: number;
+
   @Field(() => ShortAnswer, { nullable: true })
-  @OneToOne(() => ShortAnswer, { nullable: true })
-  @JoinColumn()
+  @OneToOne(() => ShortAnswer, (shortAnswer) => shortAnswer.problem, {
+    nullable: true,
+  })
   shortAnswer?: ShortAnswer;
 }

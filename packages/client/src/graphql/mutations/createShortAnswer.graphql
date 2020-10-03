@@ -1,0 +1,8 @@
+mutation CreateShortAnswer($options: ProblemsArgs!) {
+  createShortAnswer(options: $options) {
+    index
+    points
+    contestId
+    shortAnswerId
+  }
+}

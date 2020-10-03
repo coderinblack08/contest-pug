@@ -1,0 +1,14 @@
+query FindProblems($contestId: String!) {
+  findProblems(contestId: $contestId) {
+    index
+    points
+    contestId
+    shortAnswerId
+    shortAnswer {
+      id
+      question
+      answer
+      solution
+    }
+  }
+}

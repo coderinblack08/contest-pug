@@ -19,6 +19,7 @@ export type Query = {
   me?: Maybe<User>;
   getContest?: Maybe<Contest>;
   findContests: Array<Contest>;
+  findProblems: Array<Problem>;
 };
 
 
@@ -29,6 +30,11 @@ export type QueryGetContestArgs = {
 
 export type QueryFindContestsArgs = {
   options: PaginationArgs;
+};
+
+
+export type QueryFindProblemsArgs = {
+  contestId: Scalars['String'];
 };
 
 export type User = {
@@ -68,6 +74,24 @@ export type PaginationArgs = {
   cursor?: Maybe<Scalars['String']>;
 };
 
+export type Problem = {
+  __typename?: 'Problem';
+  contestId: Scalars['String'];
+  index: Scalars['Float'];
+  points: Scalars['Float'];
+  shortAnswerId?: Maybe<Scalars['Float']>;
+  shortAnswer?: Maybe<ShortAnswer>;
+};
+
+export type ShortAnswer = {
+  __typename?: 'ShortAnswer';
+  id: Scalars['Float'];
+  question?: Maybe<Scalars['String']>;
+  answer?: Maybe<Scalars['String']>;
+  solution?: Maybe<Scalars['String']>;
+  problem: Problem;
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   register: UserResponse;
@@ -79,6 +103,8 @@ export type Mutation = {
   uploadProfilePicture: Scalars['Boolean'];
   starContest: Scalars['Boolean'];
   createContest: ContestResponse;
+  createShortAnswer: Problem;
+  updateShortAnswer: Scalars['Boolean'];
 };
 
 
@@ -120,6 +146,16 @@ export type MutationStarContestArgs = {
 
 export type MutationCreateContestArgs = {
   options: ContestArgs;
+};
+
+
+export type MutationCreateShortAnswerArgs = {
+  options: ProblemsArgs;
+};
+
+
+export type MutationUpdateShortAnswerArgs = {
+  problems: Array<ProblemQuery>;
 };
 
 export type UserResponse = {
@@ -164,6 +200,29 @@ export type ContestArgs = {
   tags: Array<Scalars['String']>;
   leaderboard: Scalars['Boolean'];
   private: Scalars['Boolean'];
+};
+
+export type ProblemsArgs = {
+  contestId: Scalars['String'];
+  question?: Maybe<Scalars['String']>;
+  answer?: Maybe<Scalars['String']>;
+  solution?: Maybe<Scalars['String']>;
+  points?: Maybe<Scalars['Float']>;
+};
+
+export type ProblemQuery = {
+  contestId: Scalars['String'];
+  index: Scalars['Float'];
+  points: Scalars['Float'];
+  shortAnswerId?: Maybe<Scalars['Float']>;
+  shortAnswer?: Maybe<ShortAnswerQuery>;
+};
+
+export type ShortAnswerQuery = {
+  id: Scalars['Float'];
+  question?: Maybe<Scalars['String']>;
+  answer?: Maybe<Scalars['String']>;
+  solution?: Maybe<Scalars['String']>;
 };
 
 export type RegularErrorFragment = (
@@ -217,6 +276,19 @@ export type CreateContestMutation = (
       { __typename?: 'Contest' }
       & Pick<Contest, 'id' | 'name'>
     )> }
+  ) }
+);
+
+export type CreateShortAnswerMutationVariables = Exact<{
+  options: ProblemsArgs;
+}>;
+
+
+export type CreateShortAnswerMutation = (
+  { __typename?: 'Mutation' }
+  & { createShortAnswer: (
+    { __typename?: 'Problem' }
+    & Pick<Problem, 'index' | 'points' | 'contestId' | 'shortAnswerId'>
   ) }
 );
 
@@ -343,6 +415,23 @@ export type MeQuery = (
   )> }
 );
 
+export type FindProblemsQueryVariables = Exact<{
+  contestId: Scalars['String'];
+}>;
+
+
+export type FindProblemsQuery = (
+  { __typename?: 'Query' }
+  & { findProblems: Array<(
+    { __typename?: 'Problem' }
+    & Pick<Problem, 'index' | 'points' | 'contestId' | 'shortAnswerId'>
+    & { shortAnswer?: Maybe<(
+      { __typename?: 'ShortAnswer' }
+      & Pick<ShortAnswer, 'id' | 'question' | 'answer' | 'solution'>
+    )> }
+  )> }
+);
+
 export const RegularErrorFragmentDoc = gql`
     fragment RegularError on FieldError {
   field
@@ -439,6 +528,41 @@ export function useCreateContestMutation(baseOptions?: Apollo.MutationHookOption
 export type CreateContestMutationHookResult = ReturnType<typeof useCreateContestMutation>;
 export type CreateContestMutationResult = Apollo.MutationResult<CreateContestMutation>;
 export type CreateContestMutationOptions = Apollo.BaseMutationOptions<CreateContestMutation, CreateContestMutationVariables>;
+export const CreateShortAnswerDocument = gql`
+    mutation CreateShortAnswer($options: ProblemsArgs!) {
+  createShortAnswer(options: $options) {
+    index
+    points
+    contestId
+    shortAnswerId
+  }
+}
+    `;
+export type CreateShortAnswerMutationFn = Apollo.MutationFunction<CreateShortAnswerMutation, CreateShortAnswerMutationVariables>;
+
+/**
+ * __useCreateShortAnswerMutation__
+ *
+ * To run a mutation, you first call `useCreateShortAnswerMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateShortAnswerMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createShortAnswerMutation, { data, loading, error }] = useCreateShortAnswerMutation({
+ *   variables: {
+ *      options: // value for 'options'
+ *   },
+ * });
+ */
+export function useCreateShortAnswerMutation(baseOptions?: Apollo.MutationHookOptions<CreateShortAnswerMutation, CreateShortAnswerMutationVariables>) {
+        return Apollo.useMutation<CreateShortAnswerMutation, CreateShortAnswerMutationVariables>(CreateShortAnswerDocument, baseOptions);
+      }
+export type CreateShortAnswerMutationHookResult = ReturnType<typeof useCreateShortAnswerMutation>;
+export type CreateShortAnswerMutationResult = Apollo.MutationResult<CreateShortAnswerMutation>;
+export type CreateShortAnswerMutationOptions = Apollo.BaseMutationOptions<CreateShortAnswerMutation, CreateShortAnswerMutationVariables>;
 export const ForgotPasswordDocument = gql`
     mutation forgotPassword($email: String!) {
   forgotPassword(email: $email)
@@ -807,3 +931,45 @@ export function useMeLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<MeQuery
 export type MeQueryHookResult = ReturnType<typeof useMeQuery>;
 export type MeLazyQueryHookResult = ReturnType<typeof useMeLazyQuery>;
 export type MeQueryResult = Apollo.QueryResult<MeQuery, MeQueryVariables>;
+export const FindProblemsDocument = gql`
+    query FindProblems($contestId: String!) {
+  findProblems(contestId: $contestId) {
+    index
+    points
+    contestId
+    shortAnswerId
+    shortAnswer {
+      id
+      question
+      answer
+      solution
+    }
+  }
+}
+    `;
+
+/**
+ * __useFindProblemsQuery__
+ *
+ * To run a query within a React component, call `useFindProblemsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFindProblemsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFindProblemsQuery({
+ *   variables: {
+ *      contestId: // value for 'contestId'
+ *   },
+ * });
+ */
+export function useFindProblemsQuery(baseOptions?: Apollo.QueryHookOptions<FindProblemsQuery, FindProblemsQueryVariables>) {
+        return Apollo.useQuery<FindProblemsQuery, FindProblemsQueryVariables>(FindProblemsDocument, baseOptions);
+      }
+export function useFindProblemsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FindProblemsQuery, FindProblemsQueryVariables>) {
+          return Apollo.useLazyQuery<FindProblemsQuery, FindProblemsQueryVariables>(FindProblemsDocument, baseOptions);
+        }
+export type FindProblemsQueryHookResult = ReturnType<typeof useFindProblemsQuery>;
+export type FindProblemsLazyQueryHookResult = ReturnType<typeof useFindProblemsLazyQuery>;
+export type FindProblemsQueryResult = Apollo.QueryResult<FindProblemsQuery, FindProblemsQueryVariables>;
