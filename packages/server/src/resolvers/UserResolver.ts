@@ -2,7 +2,15 @@ import * as Yup from 'yup';
 import { v4 } from 'uuid';
 import argon from 'argon2';
 import { registerSchema, registerObject } from '@contest-pug/common';
-import { Arg, Ctx, Mutation, Query, Resolver } from 'type-graphql';
+import {
+  Arg,
+  Ctx,
+  FieldResolver,
+  Mutation,
+  Query,
+  Resolver,
+  Root,
+} from 'type-graphql';
 import { RegisterArgs } from '../types/graphql/inputs/RegisterArgs';
 import { cookie_name, forgot_password_prefix } from '../constants';
 import { LoginArgs } from '../types/graphql/inputs/LoginArgs';
@@ -12,8 +20,16 @@ import { sendEmail } from '../utils/sendEmail';
 import { MyContext } from '../types/MyContext';
 import { User } from '../entity/User';
 
-@Resolver()
+@Resolver(User)
 export class UserResolver {
+  @FieldResolver(() => String)
+  email(@Root() user: User, @Ctx() { req }: MyContext) {
+    if (req.session.userId === user.id) {
+      return user.email;
+    }
+    return '';
+  }
+
   @Query(() => User, { nullable: true })
   async me(@Ctx() { req }: MyContext) {
     if (!req.session.userId) {

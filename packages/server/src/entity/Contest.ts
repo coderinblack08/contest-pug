@@ -7,7 +7,10 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   ManyToOne,
+  OneToMany,
 } from 'typeorm';
+import { Problem } from './Problems';
+import { Star } from './Star';
 import { User } from './User';
 
 @Entity('contests')
@@ -67,10 +70,21 @@ export class Contest extends BaseEntity {
 
   @Field(() => Int)
   @Column()
-  userId!: number;
+  creatorId!: number;
 
+  @Field(() => Int)
+  @Column({ default: 0 })
+  points!: number;
+
+  @Field(() => User)
   @ManyToOne(() => User, (user) => user.contests)
-  user!: User;
+  creator!: User;
+
+  @OneToMany(() => Star, (star) => star.user)
+  stars!: Star[];
+
+  @OneToMany(() => Problem, (problem) => problem.contest)
+  problems!: Problem[];
 
   @Field(() => String)
   @CreateDateColumn()

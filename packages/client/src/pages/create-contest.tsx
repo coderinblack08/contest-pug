@@ -35,6 +35,12 @@ const CreateContest: React.FC<{}> = () => {
   const [createContest] = useCreateContestMutation();
   const [tags, setTags] = useState<string[]>([]);
 
+  const onKeyDown = (keyEvent: any) => {
+    if ((keyEvent.charCode || keyEvent.keyCode) === 13) {
+      keyEvent.preventDefault();
+    }
+  };
+
   return (
     <Layout>
       <Box px={[5, 10, 12]}>
@@ -61,11 +67,18 @@ const CreateContest: React.FC<{}> = () => {
               variables: { options: contest },
             });
             if (response.data?.createContest.errors) {
-              setErrors(toErrorMap(response.data.createContest.errors));
+              const errorMap = toErrorMap(response.data.createContest.errors);
+              if (errorMap.endDate?.includes('must be a `date` type')) {
+                errorMap.endDate = 'Please enter an end date';
+              } else if (
+                errorMap.startDate?.includes('must be a `date` type')
+              ) {
+                errorMap.startDate = 'Please enter an start date';
+              }
+              setErrors(errorMap);
             } else {
-              router.push('/settings');
+              router.push('/dashboard');
             }
-            console.log(response);
           }}
           enableReinitialize
         >
@@ -76,7 +89,7 @@ const CreateContest: React.FC<{}> = () => {
             handleBlur,
             setFieldValue,
           }) => (
-            <Form>
+            <Form onKeyDown={onKeyDown}>
               <Stack py="10vh" justify="center">
                 <Flex justify="space-between">
                   <Box>
@@ -329,7 +342,7 @@ const CreateContest: React.FC<{}> = () => {
                           label="Contest Tags"
                           {...{ maxW: 'lg', mb: 4 }}
                           onKeyDown={(e) => {
-                            if (e.key === 'Enter') {
+                            if (e.key === 'Enter' && values.tags.trim()) {
                               setTags([...tags, values.tags]);
                               setFieldValue('tags', '');
                             }

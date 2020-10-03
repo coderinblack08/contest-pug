@@ -20,20 +20,34 @@ import {
   useLogoutMutation,
   useMeQuery,
 } from '../../generated/graphql';
+import { client } from '../../pages/_app';
 import { DarkModeSwitch } from '../DarkModeSwitch';
 import { CustomLink } from '../helpers/CustomLink';
 import { LogoComponent } from '../static/LogoComponent';
 
 export const Sidenav: React.FC<{}> = () => {
-  const [loading, setLoading] = useState(true);
   const router = useRouter();
   const [logout] = useLogoutMutation();
   const { data } = useMeQuery();
+  const [loading, setLoading] = useState(true);
   const { colorMode } = useColorMode();
   const isDark = colorMode === 'dark';
 
   useEffect(() => {
-    setTimeout(() => setLoading(false), 500);
+    (async () => {
+      try {
+        const user = await client.readQuery({
+          query: MeDocument,
+        });
+        if (!user) {
+          setTimeout(() => setLoading(false), 800);
+        } else {
+          setLoading(false);
+        }
+      } catch (error) {
+        setTimeout(() => setLoading(false), 800);
+      }
+    })();
   }, []);
 
   return (

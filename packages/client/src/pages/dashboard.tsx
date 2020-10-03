@@ -23,20 +23,45 @@ import { Adjustments } from 'heroicons-react';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
+import { ContestCard } from '../components/dashboard/shared/ContestCard';
 import { Layout } from '../components/helpers/Layout';
-import { useMeQuery } from '../generated/graphql';
+import {
+  Contest,
+  FindContestDocument,
+  useFindContestQuery,
+  useMeQuery,
+} from '../generated/graphql';
+import { client } from './_app';
 
 const Dashboard: React.FC<{}> = () => {
   const router = useRouter();
   const { colorMode } = useColorMode();
   const isDark = colorMode === 'dark';
   const [loading, setLoading] = useState(true);
+  const [query, setQuery] = useState({ options: { limit: 10, cursor: null } });
   const { data: me } = useMeQuery();
+  const { data: contests } = useFindContestQuery({
+    variables: query,
+  });
   const [openBanner, setOpenBanner] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
 
   useEffect(() => {
-    setTimeout(() => setLoading(false), 500);
+    (async () => {
+      try {
+        const contest = await client.readQuery({
+          query: FindContestDocument,
+          variables: query,
+        });
+        if (!contest) {
+          setTimeout(() => setLoading(false), 800);
+        } else {
+          setLoading(false);
+        }
+      } catch (error) {
+        setTimeout(() => setLoading(false), 800);
+      }
+    })();
   }, []);
 
   return (
@@ -46,11 +71,12 @@ const Dashboard: React.FC<{}> = () => {
       </Head>
       <Flex
         px={8}
+        h={20}
+        w="100%"
         align="center"
         justify="space-between"
-        h={20}
         bg={isDark ? 'gray.700' : 'white'}
-        borderBottomColor={isDark ? 'gray.800' : 'gray.100'}
+        borderBottomColor={isDark ? 'gray.700' : 'gray.100'}
         borderBottomStyle="solid"
         borderBottomWidth={1}
       >
@@ -129,13 +155,13 @@ const Dashboard: React.FC<{}> = () => {
         <ModalContent rounded="md">
           <ModalHeader>Customize Search</ModalHeader>
           <ModalCloseButton />
-          <ModalBody>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Rerum quasi
-            nemo nam. Suscipit saepe ipsam deserunt soluta cumque in sapiente et
-            fuga excepturi accusamus id, aliquid quas cum doloribus eligendi!
-          </ModalBody>
+          <ModalBody>Comming Soon in Beta!</ModalBody>
           <ModalFooter>
-            <Button variantColor="blue" mr={3}>
+            <Button
+              variantColor="primary"
+              mr={3}
+              onClick={() => setModalOpen(false)}
+            >
               Close
             </Button>
             <Button variant="ghost">Save</Button>
@@ -143,7 +169,7 @@ const Dashboard: React.FC<{}> = () => {
         </ModalContent>
       </Modal>
       <Box p={8}>
-        <Flex justify="space-between">
+        <Flex justify="space-between" mb={[10, 10, 10, 5]}>
           <Heading fontSize="xl" fontWeight="semibold">
             Upcoming Contests
           </Heading>
@@ -152,6 +178,36 @@ const Dashboard: React.FC<{}> = () => {
             <Link ml={2}>Customize Search</Link>
           </Flex>
         </Flex>
+        <Flex
+          wrap="wrap"
+          justify={['center', 'center', 'center', 'flex-start']}
+        >
+          {contests?.findContests.map((contest, key) => (
+            <ContestCard
+              contest={contest as Contest}
+              loading={loading}
+              // eslint-disable-next-line react/no-array-index-key
+              key={key}
+            />
+          ))}
+        </Flex>
+        {/* <Button
+          onClick={() => {
+            fetchMore({
+              variables: {
+                options: {
+                  limit: variables?.options.limit,
+                  cursor:
+                    contests?.findContests[contests.findContests.length - 1]
+                      .createdAt,
+                },
+              },
+              updateQuery: (prev, { fetchMoreResult }) => {},
+            });
+          }}
+        >
+          Load More
+        </Button> */}
       </Box>
     </Layout>
   );

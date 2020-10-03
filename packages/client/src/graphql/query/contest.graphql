@@ -1,0 +1,21 @@
+query GetContest($contestId: String!) {
+  getContest(contestId: $contestId) {
+    id
+    name
+    email
+    website
+    thumbnail
+    description
+    tags
+    length
+    points
+    startDate
+    endDate
+    private
+    leaderboard
+    creator {
+      id
+      name
+    }
+  }
+}

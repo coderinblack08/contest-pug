@@ -9,6 +9,7 @@ import {
   OneToMany,
 } from 'typeorm';
 import { Contest } from './Contest';
+import { Star } from './Star';
 
 @Entity('users')
 @ObjectType()
@@ -28,12 +29,15 @@ export class User extends BaseEntity {
   @Column()
   password!: string;
 
-  @Field()
+  @Field({ nullable: true })
   @Column({ nullable: true })
   profilePicture?: string;
 
-  @OneToMany(() => Contest, (contest) => contest.user)
+  @OneToMany(() => Contest, (contest) => contest.creator)
   contests!: Contest[];
+
+  @OneToMany(() => Star, (star) => star.user)
+  stars!: Star[];
 
   @Field(() => String)
   @CreateDateColumn()

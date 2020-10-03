@@ -17,6 +17,18 @@ export type Query = {
   __typename?: 'Query';
   hello: Scalars['String'];
   me?: Maybe<User>;
+  getContest?: Maybe<Contest>;
+  findContests: Array<Contest>;
+};
+
+
+export type QueryGetContestArgs = {
+  contestId: Scalars['String'];
+};
+
+
+export type QueryFindContestsArgs = {
+  options: PaginationArgs;
 };
 
 export type User = {
@@ -24,9 +36,36 @@ export type User = {
   id: Scalars['Int'];
   name: Scalars['String'];
   email: Scalars['String'];
-  profilePicture: Scalars['String'];
+  profilePicture?: Maybe<Scalars['String']>;
   createdAt: Scalars['String'];
   updatedAt: Scalars['String'];
+};
+
+export type Contest = {
+  __typename?: 'Contest';
+  id: Scalars['ID'];
+  name: Scalars['String'];
+  email?: Maybe<Scalars['String']>;
+  website?: Maybe<Scalars['String']>;
+  thumbnail: Scalars['String'];
+  description: Scalars['String'];
+  length: Scalars['Int'];
+  startDate: Scalars['String'];
+  endDate: Scalars['String'];
+  tags: Array<Scalars['String']>;
+  leaderboard: Scalars['Boolean'];
+  private: Scalars['Boolean'];
+  open: Scalars['Boolean'];
+  creatorId: Scalars['Int'];
+  points: Scalars['Int'];
+  creator: User;
+  createdAt: Scalars['String'];
+  updatedAt: Scalars['String'];
+};
+
+export type PaginationArgs = {
+  limit: Scalars['Float'];
+  cursor?: Maybe<Scalars['String']>;
 };
 
 export type Mutation = {
@@ -38,6 +77,7 @@ export type Mutation = {
   changePassword: UserResponse;
   updateUser: Scalars['Boolean'];
   uploadProfilePicture: Scalars['Boolean'];
+  starContest: Scalars['Boolean'];
   createContest: ContestResponse;
 };
 
@@ -73,6 +113,11 @@ export type MutationUploadProfilePictureArgs = {
 };
 
 
+export type MutationStarContestArgs = {
+  contestId: Scalars['String'];
+};
+
+
 export type MutationCreateContestArgs = {
   options: ContestArgs;
 };
@@ -105,26 +150,6 @@ export type ContestResponse = {
   __typename?: 'ContestResponse';
   errors?: Maybe<Array<FieldError>>;
   contest?: Maybe<Contest>;
-};
-
-export type Contest = {
-  __typename?: 'Contest';
-  id: Scalars['ID'];
-  name: Scalars['String'];
-  email?: Maybe<Scalars['String']>;
-  website?: Maybe<Scalars['String']>;
-  thumbnail: Scalars['String'];
-  description: Scalars['String'];
-  length: Scalars['Int'];
-  startDate: Scalars['String'];
-  endDate: Scalars['String'];
-  tags: Array<Scalars['String']>;
-  leaderboard: Scalars['Boolean'];
-  private: Scalars['Boolean'];
-  open: Scalars['Boolean'];
-  userId: Scalars['Int'];
-  createdAt: Scalars['String'];
-  updatedAt: Scalars['String'];
 };
 
 export type ContestArgs = {
@@ -239,6 +264,16 @@ export type RegisterMutation = (
   ) }
 );
 
+export type StarContestMutationVariables = Exact<{
+  contestId: Scalars['String'];
+}>;
+
+
+export type StarContestMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'starContest'>
+);
+
 export type UpdateUserMutationVariables = Exact<{
   name: Scalars['String'];
 }>;
@@ -257,6 +292,36 @@ export type UploadProfilePictureMutationVariables = Exact<{
 export type UploadProfilePictureMutation = (
   { __typename?: 'Mutation' }
   & Pick<Mutation, 'uploadProfilePicture'>
+);
+
+export type GetContestQueryVariables = Exact<{
+  contestId: Scalars['String'];
+}>;
+
+
+export type GetContestQuery = (
+  { __typename?: 'Query' }
+  & { getContest?: Maybe<(
+    { __typename?: 'Contest' }
+    & Pick<Contest, 'id' | 'name' | 'email' | 'website' | 'thumbnail' | 'description' | 'tags' | 'length' | 'points' | 'startDate' | 'endDate' | 'private' | 'leaderboard'>
+    & { creator: (
+      { __typename?: 'User' }
+      & Pick<User, 'id' | 'name'>
+    ) }
+  )> }
+);
+
+export type FindContestQueryVariables = Exact<{
+  options: PaginationArgs;
+}>;
+
+
+export type FindContestQuery = (
+  { __typename?: 'Query' }
+  & { findContests: Array<(
+    { __typename?: 'Contest' }
+    & Pick<Contest, 'id' | 'name' | 'email' | 'website' | 'thumbnail' | 'description' | 'tags' | 'length' | 'startDate' | 'endDate' | 'private' | 'leaderboard'>
+  )> }
 );
 
 export type HelloQueryVariables = Exact<{ [key: string]: never; }>;
@@ -497,6 +562,36 @@ export function useRegisterMutation(baseOptions?: Apollo.MutationHookOptions<Reg
 export type RegisterMutationHookResult = ReturnType<typeof useRegisterMutation>;
 export type RegisterMutationResult = Apollo.MutationResult<RegisterMutation>;
 export type RegisterMutationOptions = Apollo.BaseMutationOptions<RegisterMutation, RegisterMutationVariables>;
+export const StarContestDocument = gql`
+    mutation StarContest($contestId: String!) {
+  starContest(contestId: $contestId)
+}
+    `;
+export type StarContestMutationFn = Apollo.MutationFunction<StarContestMutation, StarContestMutationVariables>;
+
+/**
+ * __useStarContestMutation__
+ *
+ * To run a mutation, you first call `useStarContestMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useStarContestMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [starContestMutation, { data, loading, error }] = useStarContestMutation({
+ *   variables: {
+ *      contestId: // value for 'contestId'
+ *   },
+ * });
+ */
+export function useStarContestMutation(baseOptions?: Apollo.MutationHookOptions<StarContestMutation, StarContestMutationVariables>) {
+        return Apollo.useMutation<StarContestMutation, StarContestMutationVariables>(StarContestDocument, baseOptions);
+      }
+export type StarContestMutationHookResult = ReturnType<typeof useStarContestMutation>;
+export type StarContestMutationResult = Apollo.MutationResult<StarContestMutation>;
+export type StarContestMutationOptions = Apollo.BaseMutationOptions<StarContestMutation, StarContestMutationVariables>;
 export const UpdateUserDocument = gql`
     mutation UpdateUser($name: String!) {
   updateUser(name: $name)
@@ -557,6 +652,99 @@ export function useUploadProfilePictureMutation(baseOptions?: Apollo.MutationHoo
 export type UploadProfilePictureMutationHookResult = ReturnType<typeof useUploadProfilePictureMutation>;
 export type UploadProfilePictureMutationResult = Apollo.MutationResult<UploadProfilePictureMutation>;
 export type UploadProfilePictureMutationOptions = Apollo.BaseMutationOptions<UploadProfilePictureMutation, UploadProfilePictureMutationVariables>;
+export const GetContestDocument = gql`
+    query GetContest($contestId: String!) {
+  getContest(contestId: $contestId) {
+    id
+    name
+    email
+    website
+    thumbnail
+    description
+    tags
+    length
+    points
+    startDate
+    endDate
+    private
+    leaderboard
+    creator {
+      id
+      name
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetContestQuery__
+ *
+ * To run a query within a React component, call `useGetContestQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetContestQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetContestQuery({
+ *   variables: {
+ *      contestId: // value for 'contestId'
+ *   },
+ * });
+ */
+export function useGetContestQuery(baseOptions?: Apollo.QueryHookOptions<GetContestQuery, GetContestQueryVariables>) {
+        return Apollo.useQuery<GetContestQuery, GetContestQueryVariables>(GetContestDocument, baseOptions);
+      }
+export function useGetContestLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetContestQuery, GetContestQueryVariables>) {
+          return Apollo.useLazyQuery<GetContestQuery, GetContestQueryVariables>(GetContestDocument, baseOptions);
+        }
+export type GetContestQueryHookResult = ReturnType<typeof useGetContestQuery>;
+export type GetContestLazyQueryHookResult = ReturnType<typeof useGetContestLazyQuery>;
+export type GetContestQueryResult = Apollo.QueryResult<GetContestQuery, GetContestQueryVariables>;
+export const FindContestDocument = gql`
+    query FindContest($options: PaginationArgs!) {
+  findContests(options: $options) {
+    id
+    name
+    email
+    website
+    thumbnail
+    description
+    tags
+    length
+    startDate
+    endDate
+    private
+    leaderboard
+  }
+}
+    `;
+
+/**
+ * __useFindContestQuery__
+ *
+ * To run a query within a React component, call `useFindContestQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFindContestQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFindContestQuery({
+ *   variables: {
+ *      options: // value for 'options'
+ *   },
+ * });
+ */
+export function useFindContestQuery(baseOptions?: Apollo.QueryHookOptions<FindContestQuery, FindContestQueryVariables>) {
+        return Apollo.useQuery<FindContestQuery, FindContestQueryVariables>(FindContestDocument, baseOptions);
+      }
+export function useFindContestLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FindContestQuery, FindContestQueryVariables>) {
+          return Apollo.useLazyQuery<FindContestQuery, FindContestQueryVariables>(FindContestDocument, baseOptions);
+        }
+export type FindContestQueryHookResult = ReturnType<typeof useFindContestQuery>;
+export type FindContestLazyQueryHookResult = ReturnType<typeof useFindContestLazyQuery>;
+export type FindContestQueryResult = Apollo.QueryResult<FindContestQuery, FindContestQueryVariables>;
 export const HelloDocument = gql`
     query Hello {
   hello

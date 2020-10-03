@@ -1,0 +1,16 @@
+query FindContest($options: PaginationArgs!) {
+  findContests(options: $options) {
+    id
+    name
+    email
+    website
+    thumbnail
+    description
+    tags
+    length
+    startDate
+    endDate
+    private
+    leaderboard
+  }
+}

@@ -15,6 +15,9 @@ import Redis from 'ioredis';
 import { ProfilePictureResolver } from './resolvers/ProfilePictureResolver';
 import path from 'path';
 import { ContestResolver } from './resolvers/ContestResolver';
+import { ProblemsResolvers } from './resolvers/ProblemsResolvers';
+// import { Contest } from './entity/Contest';
+// import { Star } from './entity/Star';
 
 const main = async () => {
   const connectionOptions = await getConnectionOptions();
@@ -23,7 +26,11 @@ const main = async () => {
     database: process.env.TYPEORM_DATABASE ? 'test-contest-pug' : 'contest-pug',
   });
 
-  await createConnection();
+  const connection = await createConnection();
+  await connection.runMigrations();
+
+  // await Contest.update('eb561c2b-8f9d-4ec3-b432-7e4a9430afd9', { points: 0 });
+  // await Star.delete({})
 
   const app = express();
 
@@ -68,6 +75,7 @@ const main = async () => {
         HelloResolver,
         UserResolver,
         ContestResolver,
+        ProblemsResolvers,
         ProfilePictureResolver,
       ],
       validate: false,
