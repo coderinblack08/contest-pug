@@ -9,6 +9,7 @@ import {
 } from 'type-graphql';
 import { getConnection } from 'typeorm';
 import { Contest } from '../entity/Contest';
+import { Contestant } from '../entity/Contestant';
 import { isAuth } from '../middlewares/isAuth';
 import { ContestResponse } from '../types/graphql/ContestResponse';
 import { ContestArgs } from '../types/graphql/inputs/ContestArgs';
@@ -67,8 +68,11 @@ export class ContestResolver {
   }
 
   @Query(() => Contest, { nullable: true })
-  async getContest(@Arg('contestId') contestId: string) {
-    const contest = await getConnection().query(
+  async getContest(
+    @Arg('contestId') contestId: string,
+    @Ctx() { req }: MyContext
+  ) {
+    const [contest] = await getConnection().query(
       `
       select c.*,
       json_build_object(
@@ -84,8 +88,12 @@ export class ContestResolver {
     `,
       [contestId]
     );
-    console.log(contest);
-    return contest[0];
+    const { userId } = req.session;
+    const options = { userId, contestId };
+    const contestant = await Contestant.findOne(options);
+    console.log(contestant);
+    contest.isContestant = contestant !== undefined;
+    return contest;
   }
 
   @Query(() => [Contest])
@@ -112,5 +120,51 @@ export class ContestResolver {
     console.log(contests);
 
     return contests;
+  }
+
+  @Query(() => [Contest])
+  async joinedContests(
+    @Arg('options') options: PaginationArgs,
+    @Ctx() { req }: MyContext
+  ): Promise<Contest[]> {
+    const limit = Math.min(50, options.limit);
+    const replacments: any[] = [limit, req.session.userId];
+
+    if (options.cursor) {
+      replacments.push(new Date(parseInt(options.cursor)));
+    }
+
+    const contests = await getConnection().query(
+      `
+      select c.* from contests c
+      ${options.cursor ? `where c."createdAt" < $3` : ''}
+      inner join contestants t on t."contestId" = c.id and t."userId" = $2
+      order by c."createdAt" DESC
+      limit $1
+    `,
+      replacments
+    );
+
+    console.log(contests);
+
+    return contests;
+  }
+
+  @Mutation(() => Boolean)
+  async toggleContestant(
+    @Arg('contestId') contestId: string,
+    @Ctx() { req }: MyContext
+  ) {
+    const { userId } = req.session;
+    const options = { userId, contestId };
+    const contestant = await Contestant.findOne(options);
+    console.log(contestant);
+
+    if (contestant) {
+      await Contestant.delete(options);
+      return false;
+    }
+    await Contestant.create(options).save();
+    return true;
   }
 }

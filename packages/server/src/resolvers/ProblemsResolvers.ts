@@ -15,15 +15,6 @@ export class ProblemsResolvers {
     @Ctx() { req }: MyContext
   ): Promise<Problem> {
     isOwner(options.contestId, req);
-    const lastProblem = await getConnection().query(
-      `
-      select MAX(index) from problems
-      where "contestId" = $1
-    `,
-      [options.contestId]
-    );
-
-    console.log('LAST PROBLEM: ', lastProblem);
 
     const shortAnswer = await ShortAnswer.create({
       question: options.question,
@@ -33,16 +24,31 @@ export class ProblemsResolvers {
 
     console.log(shortAnswer);
 
-    const problem = await Problem.create({
-      index: lastProblem[0].max ? lastProblem[0].max + 1 : 1,
+    const result = await Problem.create({
       points: options.points,
       contestId: options.contestId,
       shortAnswerId: shortAnswer.id,
     }).save();
 
+    const problem = await getConnection().query(
+      `
+      select p.*,
+      json_build_object(
+        'id', s.id,
+        'question', s.question,
+        'solution', s.solution,
+        'answer', s.answer
+      ) "shortAnswer"
+      from problems p
+      left join shortanswers s on p."shortAnswerId" = s."id" 
+      where p."id" = $1
+    `,
+      [result.id]
+    );
+
     console.log(problem);
 
-    return problem;
+    return problem[0];
   }
 
   @Mutation(() => Boolean)
@@ -57,14 +63,27 @@ export class ProblemsResolvers {
           `
             update problems
             set points = $1
-            where "contestId" = $2 and "shortAnswerId" = $3;
+            where "id" = $2;
           `,
-          [problem.points, problem.contestId, problem.shortAnswerId]
+          [problem.points, problem.id]
         );
         await ShortAnswer.update(problem.shortAnswerId, problem.shortAnswer);
       } else {
       }
     });
+    return true;
+  }
+
+  @Mutation(() => Boolean)
+  async deleteProblem(@Arg('id') id: number, @Ctx() { req }: MyContext) {
+    const problem = await Problem.findOne({ where: { id } });
+    if (!problem) {
+      throw new Error('Problem not found');
+    }
+    isOwner(problem.contestId, req);
+    await Problem.delete(id);
+    console.log(problem);
+    await ShortAnswer.delete(problem.shortAnswerId!);
     return true;
   }
 
@@ -82,7 +101,7 @@ export class ProblemsResolvers {
       from problems p
       left join shortanswers s on p."shortAnswerId" = s."id" 
       where p."contestId" = $1
-      order by p.index
+      order by p."id"
     `,
       [contestId]
     );

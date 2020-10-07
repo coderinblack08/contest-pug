@@ -1,8 +1,14 @@
 mutation CreateShortAnswer($options: ProblemsArgs!) {
   createShortAnswer(options: $options) {
-    index
+    id
     points
     contestId
     shortAnswerId
+    shortAnswer {
+      id
+      question
+      answer
+      solution
+    }
   }
 }

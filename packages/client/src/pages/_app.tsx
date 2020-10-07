@@ -1,5 +1,10 @@
 import { ColorModeProvider, CSSReset, ThemeProvider } from '@chakra-ui/core';
-import { ApolloProvider, ApolloClient, InMemoryCache } from '@apollo/client';
+import {
+  ApolloProvider,
+  ApolloClient,
+  InMemoryCache,
+  ApolloLink,
+} from '@apollo/client';
 import { createUploadLink } from 'apollo-upload-client';
 import cookies from 'next-cookies';
 import { Router } from 'next/router';
@@ -16,8 +21,22 @@ const link = createUploadLink({
   credentials: 'include',
 });
 
+const cleanTypeName = new ApolloLink((operation, forward) => {
+  if (operation.variables) {
+    const omitTypename = (key: string, value: any) =>
+      key === '__typename' ? undefined : value;
+    operation.variables = JSON.parse(
+      JSON.stringify(operation.variables),
+      omitTypename
+    );
+  }
+  return forward(operation).map((data) => {
+    return data;
+  });
+});
+
 export const client = new ApolloClient({
-  link,
+  link: ApolloLink.from([cleanTypeName, link]),
   cache: new InMemoryCache(),
 });
 

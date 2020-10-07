@@ -1,6 +1,6 @@
 query FindProblems($contestId: String!) {
   findProblems(contestId: $contestId) {
-    index
+    id
     points
     contestId
     shortAnswerId

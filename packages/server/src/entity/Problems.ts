@@ -2,10 +2,10 @@ import { Field, ObjectType } from 'type-graphql';
 import {
   Entity,
   BaseEntity,
-  PrimaryColumn,
   ManyToOne,
   OneToOne,
   Column,
+  PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Contest } from './Contest';
 import { ShortAnswer } from './ShortAnswer';
@@ -14,15 +14,15 @@ import { ShortAnswer } from './ShortAnswer';
 @ObjectType()
 export class Problem extends BaseEntity {
   @Field()
-  @PrimaryColumn()
+  @PrimaryGeneratedColumn()
+  id!: number;
+
+  @Field()
+  @Column()
   contestId!: string;
 
   @ManyToOne(() => Contest, (contest) => contest.stars)
   contest!: Contest;
-
-  @Field()
-  @PrimaryColumn()
-  index!: number;
 
   @Field()
   @Column({ default: 0 })

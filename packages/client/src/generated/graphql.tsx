@@ -64,6 +64,7 @@ export type Contest = {
   open: Scalars['Boolean'];
   creatorId: Scalars['Int'];
   points: Scalars['Int'];
+  isContestant?: Maybe<Scalars['Boolean']>;
   creator: User;
   createdAt: Scalars['String'];
   updatedAt: Scalars['String'];
@@ -76,8 +77,8 @@ export type PaginationArgs = {
 
 export type Problem = {
   __typename?: 'Problem';
+  id: Scalars['Float'];
   contestId: Scalars['String'];
-  index: Scalars['Float'];
   points: Scalars['Float'];
   shortAnswerId?: Maybe<Scalars['Float']>;
   shortAnswer?: Maybe<ShortAnswer>;
@@ -103,8 +104,10 @@ export type Mutation = {
   uploadProfilePicture: Scalars['Boolean'];
   starContest: Scalars['Boolean'];
   createContest: ContestResponse;
+  toggleContestant: Scalars['Boolean'];
   createShortAnswer: Problem;
   updateShortAnswer: Scalars['Boolean'];
+  deleteProblem: Scalars['Boolean'];
 };
 
 
@@ -149,6 +152,11 @@ export type MutationCreateContestArgs = {
 };
 
 
+export type MutationToggleContestantArgs = {
+  contestId: Scalars['String'];
+};
+
+
 export type MutationCreateShortAnswerArgs = {
   options: ProblemsArgs;
 };
@@ -156,6 +164,11 @@ export type MutationCreateShortAnswerArgs = {
 
 export type MutationUpdateShortAnswerArgs = {
   problems: Array<ProblemQuery>;
+};
+
+
+export type MutationDeleteProblemArgs = {
+  id: Scalars['Float'];
 };
 
 export type UserResponse = {
@@ -211,8 +224,8 @@ export type ProblemsArgs = {
 };
 
 export type ProblemQuery = {
+  id: Scalars['Float'];
   contestId: Scalars['String'];
-  index: Scalars['Float'];
   points: Scalars['Float'];
   shortAnswerId?: Maybe<Scalars['Float']>;
   shortAnswer?: Maybe<ShortAnswerQuery>;
@@ -288,8 +301,22 @@ export type CreateShortAnswerMutation = (
   { __typename?: 'Mutation' }
   & { createShortAnswer: (
     { __typename?: 'Problem' }
-    & Pick<Problem, 'index' | 'points' | 'contestId' | 'shortAnswerId'>
+    & Pick<Problem, 'id' | 'points' | 'contestId' | 'shortAnswerId'>
+    & { shortAnswer?: Maybe<(
+      { __typename?: 'ShortAnswer' }
+      & Pick<ShortAnswer, 'id' | 'question' | 'answer' | 'solution'>
+    )> }
   ) }
+);
+
+export type DeleteProblemMutationVariables = Exact<{
+  id: Scalars['Float'];
+}>;
+
+
+export type DeleteProblemMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'deleteProblem'>
 );
 
 export type ForgotPasswordMutationVariables = Exact<{
@@ -346,6 +373,26 @@ export type StarContestMutation = (
   & Pick<Mutation, 'starContest'>
 );
 
+export type ToggleContestantMutationVariables = Exact<{
+  contestId: Scalars['String'];
+}>;
+
+
+export type ToggleContestantMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'toggleContestant'>
+);
+
+export type UpdateShortAnswerMutationVariables = Exact<{
+  problems: Array<ProblemQuery>;
+}>;
+
+
+export type UpdateShortAnswerMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'updateShortAnswer'>
+);
+
 export type UpdateUserMutationVariables = Exact<{
   name: Scalars['String'];
 }>;
@@ -375,7 +422,7 @@ export type GetContestQuery = (
   { __typename?: 'Query' }
   & { getContest?: Maybe<(
     { __typename?: 'Contest' }
-    & Pick<Contest, 'id' | 'name' | 'email' | 'website' | 'thumbnail' | 'description' | 'tags' | 'length' | 'points' | 'startDate' | 'endDate' | 'private' | 'leaderboard'>
+    & Pick<Contest, 'id' | 'name' | 'email' | 'website' | 'thumbnail' | 'description' | 'tags' | 'length' | 'points' | 'startDate' | 'endDate' | 'private' | 'isContestant' | 'leaderboard'>
     & { creator: (
       { __typename?: 'User' }
       & Pick<User, 'id' | 'name'>
@@ -424,7 +471,7 @@ export type FindProblemsQuery = (
   { __typename?: 'Query' }
   & { findProblems: Array<(
     { __typename?: 'Problem' }
-    & Pick<Problem, 'index' | 'points' | 'contestId' | 'shortAnswerId'>
+    & Pick<Problem, 'id' | 'points' | 'contestId' | 'shortAnswerId'>
     & { shortAnswer?: Maybe<(
       { __typename?: 'ShortAnswer' }
       & Pick<ShortAnswer, 'id' | 'question' | 'answer' | 'solution'>
@@ -531,10 +578,16 @@ export type CreateContestMutationOptions = Apollo.BaseMutationOptions<CreateCont
 export const CreateShortAnswerDocument = gql`
     mutation CreateShortAnswer($options: ProblemsArgs!) {
   createShortAnswer(options: $options) {
-    index
+    id
     points
     contestId
     shortAnswerId
+    shortAnswer {
+      id
+      question
+      answer
+      solution
+    }
   }
 }
     `;
@@ -563,6 +616,36 @@ export function useCreateShortAnswerMutation(baseOptions?: Apollo.MutationHookOp
 export type CreateShortAnswerMutationHookResult = ReturnType<typeof useCreateShortAnswerMutation>;
 export type CreateShortAnswerMutationResult = Apollo.MutationResult<CreateShortAnswerMutation>;
 export type CreateShortAnswerMutationOptions = Apollo.BaseMutationOptions<CreateShortAnswerMutation, CreateShortAnswerMutationVariables>;
+export const DeleteProblemDocument = gql`
+    mutation DeleteProblem($id: Float!) {
+  deleteProblem(id: $id)
+}
+    `;
+export type DeleteProblemMutationFn = Apollo.MutationFunction<DeleteProblemMutation, DeleteProblemMutationVariables>;
+
+/**
+ * __useDeleteProblemMutation__
+ *
+ * To run a mutation, you first call `useDeleteProblemMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteProblemMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteProblemMutation, { data, loading, error }] = useDeleteProblemMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useDeleteProblemMutation(baseOptions?: Apollo.MutationHookOptions<DeleteProblemMutation, DeleteProblemMutationVariables>) {
+        return Apollo.useMutation<DeleteProblemMutation, DeleteProblemMutationVariables>(DeleteProblemDocument, baseOptions);
+      }
+export type DeleteProblemMutationHookResult = ReturnType<typeof useDeleteProblemMutation>;
+export type DeleteProblemMutationResult = Apollo.MutationResult<DeleteProblemMutation>;
+export type DeleteProblemMutationOptions = Apollo.BaseMutationOptions<DeleteProblemMutation, DeleteProblemMutationVariables>;
 export const ForgotPasswordDocument = gql`
     mutation forgotPassword($email: String!) {
   forgotPassword(email: $email)
@@ -716,6 +799,66 @@ export function useStarContestMutation(baseOptions?: Apollo.MutationHookOptions<
 export type StarContestMutationHookResult = ReturnType<typeof useStarContestMutation>;
 export type StarContestMutationResult = Apollo.MutationResult<StarContestMutation>;
 export type StarContestMutationOptions = Apollo.BaseMutationOptions<StarContestMutation, StarContestMutationVariables>;
+export const ToggleContestantDocument = gql`
+    mutation ToggleContestant($contestId: String!) {
+  toggleContestant(contestId: $contestId)
+}
+    `;
+export type ToggleContestantMutationFn = Apollo.MutationFunction<ToggleContestantMutation, ToggleContestantMutationVariables>;
+
+/**
+ * __useToggleContestantMutation__
+ *
+ * To run a mutation, you first call `useToggleContestantMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useToggleContestantMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [toggleContestantMutation, { data, loading, error }] = useToggleContestantMutation({
+ *   variables: {
+ *      contestId: // value for 'contestId'
+ *   },
+ * });
+ */
+export function useToggleContestantMutation(baseOptions?: Apollo.MutationHookOptions<ToggleContestantMutation, ToggleContestantMutationVariables>) {
+        return Apollo.useMutation<ToggleContestantMutation, ToggleContestantMutationVariables>(ToggleContestantDocument, baseOptions);
+      }
+export type ToggleContestantMutationHookResult = ReturnType<typeof useToggleContestantMutation>;
+export type ToggleContestantMutationResult = Apollo.MutationResult<ToggleContestantMutation>;
+export type ToggleContestantMutationOptions = Apollo.BaseMutationOptions<ToggleContestantMutation, ToggleContestantMutationVariables>;
+export const UpdateShortAnswerDocument = gql`
+    mutation UpdateShortAnswer($problems: [ProblemQuery!]!) {
+  updateShortAnswer(problems: $problems)
+}
+    `;
+export type UpdateShortAnswerMutationFn = Apollo.MutationFunction<UpdateShortAnswerMutation, UpdateShortAnswerMutationVariables>;
+
+/**
+ * __useUpdateShortAnswerMutation__
+ *
+ * To run a mutation, you first call `useUpdateShortAnswerMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateShortAnswerMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateShortAnswerMutation, { data, loading, error }] = useUpdateShortAnswerMutation({
+ *   variables: {
+ *      problems: // value for 'problems'
+ *   },
+ * });
+ */
+export function useUpdateShortAnswerMutation(baseOptions?: Apollo.MutationHookOptions<UpdateShortAnswerMutation, UpdateShortAnswerMutationVariables>) {
+        return Apollo.useMutation<UpdateShortAnswerMutation, UpdateShortAnswerMutationVariables>(UpdateShortAnswerDocument, baseOptions);
+      }
+export type UpdateShortAnswerMutationHookResult = ReturnType<typeof useUpdateShortAnswerMutation>;
+export type UpdateShortAnswerMutationResult = Apollo.MutationResult<UpdateShortAnswerMutation>;
+export type UpdateShortAnswerMutationOptions = Apollo.BaseMutationOptions<UpdateShortAnswerMutation, UpdateShortAnswerMutationVariables>;
 export const UpdateUserDocument = gql`
     mutation UpdateUser($name: String!) {
   updateUser(name: $name)
@@ -791,6 +934,7 @@ export const GetContestDocument = gql`
     startDate
     endDate
     private
+    isContestant
     leaderboard
     creator {
       id
@@ -934,7 +1078,7 @@ export type MeQueryResult = Apollo.QueryResult<MeQuery, MeQueryVariables>;
 export const FindProblemsDocument = gql`
     query FindProblems($contestId: String!) {
   findProblems(contestId: $contestId) {
-    index
+    id
     points
     contestId
     shortAnswerId

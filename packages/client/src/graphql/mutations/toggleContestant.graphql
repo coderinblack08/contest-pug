@@ -1,0 +1,3 @@
+mutation ToggleContestant($contestId: String!) {
+  toggleContestant(contestId: $contestId)
+}

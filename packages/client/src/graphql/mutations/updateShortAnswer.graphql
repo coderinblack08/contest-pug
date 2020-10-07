@@ -1,0 +1,3 @@
+mutation UpdateShortAnswer($problems: [ProblemQuery!]!) {
+  updateShortAnswer(problems: $problems)
+}

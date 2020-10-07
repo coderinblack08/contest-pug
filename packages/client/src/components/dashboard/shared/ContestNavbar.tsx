@@ -1,10 +1,14 @@
-import { Flex, PseudoBox, useColorMode, Text } from '@chakra-ui/core';
-import { StarOutline } from 'heroicons-react';
+import { Flex, PseudoBox, useColorMode, Button, Text } from '@chakra-ui/core';
+import { StarOutline, ViewGridAddOutline } from 'heroicons-react';
 import { useRouter } from 'next/router';
 import React from 'react';
 import {
   useStarContestMutation,
   useGetContestQuery,
+  useToggleContestantMutation,
+  GetContestDocument,
+  GetContestQuery,
+  Contest,
 } from '../../../generated/graphql';
 import { useIsCreator } from '../../../utils/useIsCreator';
 import { CustomLink } from '../../helpers/CustomLink';
@@ -14,6 +18,7 @@ export const ContestNavbar: React.FC<{ id: string }> = ({ id }) => {
   const isDark = colorMode === 'dark';
   const [starContest] = useStarContestMutation();
   const isAuthor = useIsCreator(id);
+  const [toggleContestant] = useToggleContestantMutation();
   const { data: contest, refetch } = useGetContestQuery({
     variables: { contestId: id },
   });
@@ -107,7 +112,7 @@ export const ContestNavbar: React.FC<{ id: string }> = ({ id }) => {
             />
           ) : null}
         </Flex>
-        <Flex>
+        <Flex align="center">
           <PseudoBox
             tabIndex={0}
             shadow="sm"
@@ -152,6 +157,35 @@ export const ContestNavbar: React.FC<{ id: string }> = ({ id }) => {
               </Text>
             </Flex>
           </PseudoBox>
+          <Button
+            variantColor="primary"
+            ml={5}
+            shadow="md"
+            onClick={async () => {
+              await toggleContestant({
+                variables: { contestId: contest.getContest?.id || '' },
+                update: (cache) => {
+                  cache.writeQuery<GetContestQuery>({
+                    query: GetContestDocument,
+                    data: {
+                      __typename: 'Query',
+                      getContest: {
+                        ...(contest.getContest as Contest),
+                        isContestant: !contest.getContest?.isContestant,
+                      },
+                    },
+                  });
+                },
+              });
+            }}
+          >
+            <ViewGridAddOutline size={18} />
+            {contest.getContest.isContestant ? (
+              <Text ml={2}>Leave</Text>
+            ) : (
+              <Text ml={2}>Join</Text>
+            )}
+          </Button>
         </Flex>
       </Flex>
     );

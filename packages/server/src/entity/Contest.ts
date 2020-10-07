@@ -9,6 +9,7 @@ import {
   ManyToOne,
   OneToMany,
 } from 'typeorm';
+import { Contestant } from './Contestant';
 import { Problem } from './Problems';
 import { Star } from './Star';
 import { User } from './User';
@@ -76,12 +77,18 @@ export class Contest extends BaseEntity {
   @Column({ default: 0 })
   points!: number;
 
+  @Field(() => Boolean, { defaultValue: false })
+  isContestant!: boolean;
+
   @Field(() => User)
   @ManyToOne(() => User, (user) => user.contests)
   creator!: User;
 
-  @OneToMany(() => Star, (star) => star.user)
+  @OneToMany(() => Star, (star) => star.contest)
   stars!: Star[];
+
+  @OneToMany(() => Contestant, (star) => star.contest)
+  contestants!: Contestant[];
 
   @OneToMany(() => Problem, (problem) => problem.contest)
   problems!: Problem[];

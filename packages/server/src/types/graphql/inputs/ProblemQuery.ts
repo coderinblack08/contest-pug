@@ -18,10 +18,10 @@ export class ShortAnswerQuery {
 @InputType()
 export class ProblemQuery {
   @Field()
-  contestId!: string;
+  id!: number;
 
   @Field()
-  index!: number;
+  contestId!: string;
 
   @Field()
   points!: number;

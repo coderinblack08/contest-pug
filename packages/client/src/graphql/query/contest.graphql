@@ -12,6 +12,7 @@ query GetContest($contestId: String!) {
     startDate
     endDate
     private
+    isContestant
     leaderboard
     creator {
       id

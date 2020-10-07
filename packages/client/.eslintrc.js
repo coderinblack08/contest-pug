@@ -27,6 +27,8 @@ module.exports = {
     'react/prop-types': 'off',
     'react/no-unescaped-entities': 'off',
     'arrow-body-style': 'off',
+    'operator-linebreak': 'off',
     'no-nested-ternary': 'off',
+    'comma-dangle': 'off',
   },
 };

@@ -11,7 +11,7 @@ import {
 import DatePicker from 'react-datepicker';
 
 type InputFieldProps = InputHTMLAttributes<HTMLInputElement> & {
-  label: string;
+  label?: string;
   name: string;
   date?: boolean;
   textarea?: boolean;
@@ -52,9 +52,11 @@ const InputField: React.FC<InputFieldProps> = ({
         </Box>
       ) : (
         <>
-          <FormLabel htmlFor={field.name} mb={1}>
-            {label}
-          </FormLabel>
+          {label ? (
+            <FormLabel htmlFor={field.name} mb={1}>
+              {label}
+            </FormLabel>
+          ) : null}
           <InputOrTextarea
             {...field}
             {...props}
