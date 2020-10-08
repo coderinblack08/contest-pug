@@ -80,6 +80,9 @@ export class Contest extends BaseEntity {
   @Field(() => Boolean, { defaultValue: false })
   isContestant!: boolean;
 
+  @Field(() => Boolean, { defaultValue: false })
+  isStarred!: boolean;
+
   @Field(() => User)
   @ManyToOne(() => User, (user) => user.contests)
   creator!: User;

@@ -1,4 +1,12 @@
-import { Box, Flex, Heading, Link, Text, useColorMode } from '@chakra-ui/core';
+import {
+  Avatar,
+  Box,
+  Flex,
+  Heading,
+  Link,
+  Text,
+  useColorMode,
+} from '@chakra-ui/core';
 import { LinkOutline, MailOutline, PencilOutline } from 'heroicons-react';
 import { NextPage } from 'next';
 import React from 'react';
@@ -24,7 +32,7 @@ const Contest: NextPage<{ id: string }> = ({ id }) => {
         >
           <Box
             w="100%"
-            mr={8}
+            mr={6}
             bg={isDark ? 'gray.700' : 'white'}
             p={5}
             shadow="sm"
@@ -48,6 +56,21 @@ const Contest: NextPage<{ id: string }> = ({ id }) => {
             >
               {contest.getContest.description}
             </Text>
+            <Flex
+              mt={5}
+              align="center"
+              color={isDark ? 'gray.400' : 'gray.500'}
+            >
+              <Avatar
+                size="sm"
+                rounded="full"
+                src={`http://localhost:4000/images/${contest.getContest.creator.profilePicture}`}
+              />
+              <Text ml={4} fontWeight="medium">
+                Created by
+                {` ${contest.getContest.creator.name}`}
+              </Text>
+            </Flex>
           </Box>
           <Box
             maxW="340px"

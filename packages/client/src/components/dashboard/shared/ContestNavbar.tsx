@@ -146,15 +146,27 @@ export const ContestNavbar: React.FC<{ id: string }> = ({ id }) => {
                   {contest.getContest.points}
                 </Text>
               </Flex>
-              <Text
-                px={4}
-                py={2}
-                roundedRight="sm"
-                fontWeight="medium"
-                bg={isDark ? 'gray.800' : undefined}
-              >
-                Star
-              </Text>
+              {contest.getContest.isStarred ? (
+                <Text
+                  px={4}
+                  py={2}
+                  roundedRight="sm"
+                  fontWeight="medium"
+                  bg={isDark ? 'gray.800' : undefined}
+                >
+                  Unstar
+                </Text>
+              ) : (
+                <Text
+                  px={4}
+                  py={2}
+                  roundedRight="sm"
+                  fontWeight="medium"
+                  bg={isDark ? 'gray.800' : undefined}
+                >
+                  Star
+                </Text>
+              )}
             </Flex>
           </PseudoBox>
           <Button
@@ -175,6 +187,7 @@ export const ContestNavbar: React.FC<{ id: string }> = ({ id }) => {
                       },
                     },
                   });
+                  cache.evict({ fieldName: 'joinedContests' });
                 },
               });
             }}

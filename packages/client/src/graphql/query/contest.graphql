@@ -13,10 +13,12 @@ query GetContest($contestId: String!) {
     endDate
     private
     isContestant
+    isStarred
     leaderboard
     creator {
       id
       name
+      profilePicture
     }
   }
 }

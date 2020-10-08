@@ -27,8 +27,8 @@ import { ContestCard } from '../components/dashboard/shared/ContestCard';
 import { Layout } from '../components/helpers/Layout';
 import {
   Contest,
-  FindContestDocument,
-  useFindContestQuery,
+  JoinedContestsDocument,
+  useJoinedContestsQuery,
   useMeQuery,
 } from '../generated/graphql';
 import { client } from './_app';
@@ -38,9 +38,9 @@ const Dashboard: React.FC<{}> = () => {
   const { colorMode } = useColorMode();
   const isDark = colorMode === 'dark';
   const [loading, setLoading] = useState(true);
-  const [query, setQuery] = useState({ options: { limit: 10, cursor: null } });
+  const [query] = useState({ options: { limit: 10, cursor: null } });
   const { data: me } = useMeQuery();
-  const { data: contests } = useFindContestQuery({
+  const { data: contests } = useJoinedContestsQuery({
     variables: query,
   });
   const [openBanner, setOpenBanner] = useState(true);
@@ -50,7 +50,7 @@ const Dashboard: React.FC<{}> = () => {
     (async () => {
       try {
         const contest = await client.readQuery({
-          query: FindContestDocument,
+          query: JoinedContestsDocument,
           variables: query,
         });
         if (!contest) {
@@ -182,7 +182,7 @@ const Dashboard: React.FC<{}> = () => {
           wrap="wrap"
           justify={['center', 'center', 'center', 'flex-start']}
         >
-          {contests?.findContests.map((contest, key) => (
+          {contests?.joinedContests.map((contest, key) => (
             <ContestCard
               contest={contest as Contest}
               loading={loading}

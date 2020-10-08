@@ -1,0 +1,16 @@
+query JoinedContests($options: PaginationArgs!) {
+  joinedContests(options: $options) {
+    id
+    name
+    email
+    website
+    thumbnail
+    description
+    tags
+    length
+    startDate
+    endDate
+    private
+    leaderboard
+  }
+}

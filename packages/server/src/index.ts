@@ -11,13 +11,24 @@ import { HelloResolver } from './resolvers/HelloResolver';
 import { UserResolver } from './resolvers/UserResolver';
 import session from 'express-session';
 import connectRedis from 'connect-redis';
+import { print } from 'graphql';
 import Redis from 'ioredis';
 import { ProfilePictureResolver } from './resolvers/ProfilePictureResolver';
 import path from 'path';
 import { ContestResolver } from './resolvers/ContestResolver';
 import { ProblemsResolvers } from './resolvers/ProblemsResolvers';
-// import { Contest } from './entity/Contest';
-// import { Star } from './entity/Star';
+
+class BasicLogging {
+  requestDidStart({ queryString, parsedQuery, variables }: any) {
+    const query = queryString || print(parsedQuery);
+    console.log(query);
+    console.log(variables);
+  }
+
+  willSendResponse({ graphqlResponse }: any) {
+    console.log(JSON.stringify(graphqlResponse, null, 2));
+  }
+}
 
 const main = async () => {
   const connectionOptions = await getConnectionOptions();
@@ -28,9 +39,6 @@ const main = async () => {
 
   const connection = await createConnection();
   await connection.runMigrations();
-
-  // await Contest.update('eb561c2b-8f9d-4ec3-b432-7e4a9430afd9', { points: 0 });
-  // await Star.delete({})
 
   const app = express();
 
@@ -81,6 +89,7 @@ const main = async () => {
       validate: false,
     }),
     context: ({ req, res }) => ({ req, res, redis }),
+    extensions: [() => new BasicLogging()],
     uploads: false,
   });
 

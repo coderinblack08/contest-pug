@@ -38,7 +38,7 @@ const Contests: React.FC<{}> = () => {
   const { colorMode } = useColorMode();
   const isDark = colorMode === 'dark';
   const [loading, setLoading] = useState(true);
-  const [query, setQuery] = useState({ options: { limit: 10, cursor: null } });
+  const [query] = useState({ options: { limit: 10, cursor: null } });
   const { data: me } = useMeQuery();
   const { data: contests } = useFindContestQuery({
     variables: query,

@@ -19,6 +19,7 @@ export type Query = {
   me?: Maybe<User>;
   getContest?: Maybe<Contest>;
   findContests: Array<Contest>;
+  joinedContests: Array<Contest>;
   findProblems: Array<Problem>;
 };
 
@@ -29,6 +30,11 @@ export type QueryGetContestArgs = {
 
 
 export type QueryFindContestsArgs = {
+  options: PaginationArgs;
+};
+
+
+export type QueryJoinedContestsArgs = {
   options: PaginationArgs;
 };
 
@@ -65,6 +71,7 @@ export type Contest = {
   creatorId: Scalars['Int'];
   points: Scalars['Int'];
   isContestant?: Maybe<Scalars['Boolean']>;
+  isStarred?: Maybe<Scalars['Boolean']>;
   creator: User;
   createdAt: Scalars['String'];
   updatedAt: Scalars['String'];
@@ -422,10 +429,10 @@ export type GetContestQuery = (
   { __typename?: 'Query' }
   & { getContest?: Maybe<(
     { __typename?: 'Contest' }
-    & Pick<Contest, 'id' | 'name' | 'email' | 'website' | 'thumbnail' | 'description' | 'tags' | 'length' | 'points' | 'startDate' | 'endDate' | 'private' | 'isContestant' | 'leaderboard'>
+    & Pick<Contest, 'id' | 'name' | 'email' | 'website' | 'thumbnail' | 'description' | 'tags' | 'length' | 'points' | 'startDate' | 'endDate' | 'private' | 'isContestant' | 'isStarred' | 'leaderboard'>
     & { creator: (
       { __typename?: 'User' }
-      & Pick<User, 'id' | 'name'>
+      & Pick<User, 'id' | 'name' | 'profilePicture'>
     ) }
   )> }
 );
@@ -449,6 +456,19 @@ export type HelloQueryVariables = Exact<{ [key: string]: never; }>;
 export type HelloQuery = (
   { __typename?: 'Query' }
   & Pick<Query, 'hello'>
+);
+
+export type JoinedContestsQueryVariables = Exact<{
+  options: PaginationArgs;
+}>;
+
+
+export type JoinedContestsQuery = (
+  { __typename?: 'Query' }
+  & { joinedContests: Array<(
+    { __typename?: 'Contest' }
+    & Pick<Contest, 'id' | 'name' | 'email' | 'website' | 'thumbnail' | 'description' | 'tags' | 'length' | 'startDate' | 'endDate' | 'private' | 'leaderboard'>
+  )> }
 );
 
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
@@ -935,10 +955,12 @@ export const GetContestDocument = gql`
     endDate
     private
     isContestant
+    isStarred
     leaderboard
     creator {
       id
       name
+      profilePicture
     }
   }
 }
@@ -1043,6 +1065,50 @@ export function useHelloLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<Hell
 export type HelloQueryHookResult = ReturnType<typeof useHelloQuery>;
 export type HelloLazyQueryHookResult = ReturnType<typeof useHelloLazyQuery>;
 export type HelloQueryResult = Apollo.QueryResult<HelloQuery, HelloQueryVariables>;
+export const JoinedContestsDocument = gql`
+    query JoinedContests($options: PaginationArgs!) {
+  joinedContests(options: $options) {
+    id
+    name
+    email
+    website
+    thumbnail
+    description
+    tags
+    length
+    startDate
+    endDate
+    private
+    leaderboard
+  }
+}
+    `;
+
+/**
+ * __useJoinedContestsQuery__
+ *
+ * To run a query within a React component, call `useJoinedContestsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useJoinedContestsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useJoinedContestsQuery({
+ *   variables: {
+ *      options: // value for 'options'
+ *   },
+ * });
+ */
+export function useJoinedContestsQuery(baseOptions?: Apollo.QueryHookOptions<JoinedContestsQuery, JoinedContestsQueryVariables>) {
+        return Apollo.useQuery<JoinedContestsQuery, JoinedContestsQueryVariables>(JoinedContestsDocument, baseOptions);
+      }
+export function useJoinedContestsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<JoinedContestsQuery, JoinedContestsQueryVariables>) {
+          return Apollo.useLazyQuery<JoinedContestsQuery, JoinedContestsQueryVariables>(JoinedContestsDocument, baseOptions);
+        }
+export type JoinedContestsQueryHookResult = ReturnType<typeof useJoinedContestsQuery>;
+export type JoinedContestsLazyQueryHookResult = ReturnType<typeof useJoinedContestsLazyQuery>;
+export type JoinedContestsQueryResult = Apollo.QueryResult<JoinedContestsQuery, JoinedContestsQueryVariables>;
 export const MeDocument = gql`
     query Me {
   me {

@@ -20,6 +20,8 @@ import { Form, Formik } from 'formik';
 import { DotsVertical } from 'heroicons-react';
 import { NextPage } from 'next';
 import React, { useState } from 'react';
+import omitDeep from 'omit-deep';
+import cloneDeep from 'clone-deep';
 import { ContestNavbar } from '../../components/dashboard/shared/ContestNavbar';
 import InputField from '../../components/forms/InputField';
 import { Layout } from '../../components/helpers/Layout';
@@ -39,7 +41,7 @@ const Contest: NextPage<{ id: string }> = ({ id }) => {
   const open = () => setIsOpen(true);
   const close = () => setIsOpen(false);
   const { colorMode } = useColorMode();
-  // eslint-disable-next-line no-unused-vars
+
   const isDark = colorMode === 'dark';
   const [updateShortAnswer] = useUpdateShortAnswerMutation();
   const [deleteProblem] = useDeleteProblemMutation();
@@ -256,7 +258,10 @@ const Contest: NextPage<{ id: string }> = ({ id }) => {
 
                         await updateShortAnswer({
                           variables: {
-                            problems: shortAnswers as any,
+                            problems: omitDeep(
+                              cloneDeep(shortAnswers),
+                              '__typename'
+                            ),
                           },
                         });
 

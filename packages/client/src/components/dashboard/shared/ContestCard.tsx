@@ -31,7 +31,7 @@ export const ContestCard: React.FC<ContestCardProps> = ({
         maxW={['xl', 'xl', 'xl', 'md']}
         w="100%"
         rounded="md"
-        shadow="md"
+        shadow="sm"
         cursor="pointer"
       >
         <Box p={5}>

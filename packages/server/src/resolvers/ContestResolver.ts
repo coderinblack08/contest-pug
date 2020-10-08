@@ -10,6 +10,7 @@ import {
 import { getConnection } from 'typeorm';
 import { Contest } from '../entity/Contest';
 import { Contestant } from '../entity/Contestant';
+import { Star } from '../entity/Star';
 import { isAuth } from '../middlewares/isAuth';
 import { ContestResponse } from '../types/graphql/ContestResponse';
 import { ContestArgs } from '../types/graphql/inputs/ContestArgs';
@@ -26,7 +27,10 @@ export class ContestResolver {
     @Ctx() { req }: MyContext
   ) {
     const { userId } = req.session;
-    try {
+    // await Contest.update(contestId, { points: 0 });
+    // await Star.delete({});
+    const star = await Star.findOne({ userId, contestId });
+    if (!star) {
       await getConnection().query(
         `
         insert into stars ("userId", "contestId")
@@ -34,19 +38,31 @@ export class ContestResolver {
       `,
         [userId, contestId]
       );
-    } catch (error) {
-      console.error(error);
-      return false;
-    }
-    await getConnection().query(
-      `
-      update contests c
-      set points = points + 1
-      where c.id = $1;
+      await getConnection().query(
+        `
+        update contests c
+        set points = points + 1
+        where c.id = $1;
+        `,
+        [contestId]
+      );
+    } else {
+      await getConnection().query(
+        `
+        delete from stars 
+        where "userId" = $1 and "contestId" = $2;
       `,
-      [contestId]
-    );
-
+        [userId, contestId]
+      );
+      await getConnection().query(
+        `
+        update contests c
+        set points = points - 1
+        where c.id = $1;
+        `,
+        [contestId]
+      );
+    }
     return true;
   }
 
@@ -79,6 +95,7 @@ export class ContestResolver {
         'id', u.id,
         'name', u.name,
         'email', u.email,
+        'profilePicture', u."profilePicture",
         'updatedAt', u."updatedAt",
         'createdAt', u."createdAt"
       ) creator
@@ -91,8 +108,9 @@ export class ContestResolver {
     const { userId } = req.session;
     const options = { userId, contestId };
     const contestant = await Contestant.findOne(options);
-    console.log(contestant);
+    const star = await Star.findOne(options);
     contest.isContestant = contestant !== undefined;
+    contest.isStarred = star !== undefined;
     return contest;
   }
 
