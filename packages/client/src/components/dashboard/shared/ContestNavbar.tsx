@@ -1,5 +1,10 @@
 import { Flex, PseudoBox, useColorMode, Button, Text } from '@chakra-ui/core';
-import { StarOutline, ViewGridAddOutline } from 'heroicons-react';
+import {
+  LogoutOutline,
+  Star,
+  StarOutline,
+  ViewGridAddOutline,
+} from 'heroicons-react';
 import { useRouter } from 'next/router';
 import React from 'react';
 import {
@@ -10,6 +15,7 @@ import {
   GetContestQuery,
   Contest,
 } from '../../../generated/graphql';
+import { abbreviateNumber } from '../../../utils/abbreviateNumber';
 import { useIsCreator } from '../../../utils/useIsCreator';
 import { CustomLink } from '../../helpers/CustomLink';
 
@@ -110,6 +116,30 @@ export const ContestNavbar: React.FC<{ id: string }> = ({ id }) => {
               px={5}
               py={2}
             />
+          ) : contest.getContest.isContestant ? (
+            <CustomLink
+              rounded="md"
+              fontSize="lg"
+              text="Compete"
+              color={
+                isDark
+                  ? pathName === 'compete'
+                    ? 'gray.300'
+                    : 'gray.400'
+                  : 'gray.500'
+              }
+              bg={isDark && pathName === 'compete' ? 'gray.600' : undefined}
+              shadow={pathName === 'compete' ? 'sm' : undefined}
+              fontWeight="medium"
+              href="/problems/[id]"
+              hrefAs={`/problems/${contest.getContest.id}`}
+              _hover={{
+                textDecor: 'none',
+              }}
+              mr={5}
+              px={5}
+              py={2}
+            />
           ) : null}
         </Flex>
         <Flex align="center">
@@ -141,9 +171,13 @@ export const ContestNavbar: React.FC<{ id: string }> = ({ id }) => {
                 bg={isDark ? 'gray.600' : 'gray.50'}
                 borderRightColor={isDark ? 'gray.800' : 'gray.200'}
               >
-                <StarOutline size={18} />
+                {contest.getContest.isStarred ? (
+                  <Star size={18} />
+                ) : (
+                  <StarOutline size={18} />
+                )}
                 <Text ml={2} fontWeight="medium">
-                  {contest.getContest.points}
+                  {abbreviateNumber(contest.getContest.points)}
                 </Text>
               </Flex>
               {contest.getContest.isStarred ? (
@@ -169,36 +203,42 @@ export const ContestNavbar: React.FC<{ id: string }> = ({ id }) => {
               )}
             </Flex>
           </PseudoBox>
-          <Button
-            variantColor="primary"
-            ml={5}
-            shadow="md"
-            onClick={async () => {
-              await toggleContestant({
-                variables: { contestId: contest.getContest?.id || '' },
-                update: (cache) => {
-                  cache.writeQuery<GetContestQuery>({
-                    query: GetContestDocument,
-                    data: {
-                      __typename: 'Query',
-                      getContest: {
-                        ...(contest.getContest as Contest),
-                        isContestant: !contest.getContest?.isContestant,
+          {!isAuthor ? (
+            <Button
+              variantColor="primary"
+              ml={5}
+              shadow="md"
+              onClick={async () => {
+                await toggleContestant({
+                  variables: { contestId: contest.getContest?.id || '' },
+                  update: (cache) => {
+                    cache.writeQuery<GetContestQuery>({
+                      query: GetContestDocument,
+                      data: {
+                        __typename: 'Query',
+                        getContest: {
+                          ...(contest.getContest as Contest),
+                          isContestant: !contest.getContest?.isContestant,
+                        },
                       },
-                    },
-                  });
-                  cache.evict({ fieldName: 'joinedContests' });
-                },
-              });
-            }}
-          >
-            <ViewGridAddOutline size={18} />
-            {contest.getContest.isContestant ? (
-              <Text ml={2}>Leave</Text>
-            ) : (
-              <Text ml={2}>Join</Text>
-            )}
-          </Button>
+                    });
+                    cache.evict({ fieldName: 'joinedContests' });
+                  },
+                });
+              }}
+            >
+              {contest.getContest.isContestant ? (
+                <LogoutOutline size={18} />
+              ) : (
+                <ViewGridAddOutline size={18} />
+              )}
+              {contest.getContest.isContestant ? (
+                <Text ml={2}>Leave</Text>
+              ) : (
+                <Text ml={2}>Join</Text>
+              )}
+            </Button>
+          ) : null}
         </Flex>
       </Flex>
     );

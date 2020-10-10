@@ -1,6 +1,9 @@
 import {
+  Alert,
+  AlertIcon,
   Avatar,
   Box,
+  Button,
   Flex,
   Heading,
   Link,
@@ -26,7 +29,7 @@ const Contest: NextPage<{ id: string }> = ({ id }) => {
       <Layout>
         <ContestNavbar id={id} />
         <Flex
-          p={8}
+          p={[5, 8]}
           align="flex-start"
           direction={['column-reverse', 'column-reverse', 'row', 'row']}
         >
@@ -41,11 +44,12 @@ const Contest: NextPage<{ id: string }> = ({ id }) => {
             <Flex
               justify="space-between"
               color={isDark ? 'gray.200' : 'gray.700'}
+              mb={2}
             >
-              <Heading fontSize="lg" mb={2}>
+              <Heading fontSize="lg" mr={1}>
                 Description
               </Heading>
-              <Box color={isDark ? 'gray.400' : 'gray.500'}>
+              <Box color={isDark ? 'gray.400' : 'gray.500'} ml={4}>
                 <PencilOutline size={18} cursor="pointer" />
               </Box>
             </Flex>
@@ -64,23 +68,24 @@ const Contest: NextPage<{ id: string }> = ({ id }) => {
               <Avatar
                 size="sm"
                 rounded="full"
+                name={contest.getContest.creator.name}
                 src={`http://localhost:4000/images/${contest.getContest.creator.profilePicture}`}
               />
-              <Text ml={4} fontWeight="medium">
+              <Text ml={3} fontWeight="medium">
                 Created by
                 {` ${contest.getContest.creator.name}`}
               </Text>
             </Flex>
           </Box>
           <Box
-            maxW="340px"
             bg={isDark ? 'gray.700' : 'white'}
-            p={6}
             mb={[5, 5, 0, 0]}
-            shadow="sm"
             rounded="md"
+            maxW="340px"
+            shadow="sm"
+            p={6}
           >
-            <Heading as="h6" fontSize="xl" fontWeight="semibold">
+            <Heading as="h6" fontSize="xl" fontWeight="semibold" mr={1}>
               {contest.getContest.name}
             </Heading>
             <Text color={isDark ? 'gray.300' : 'gray.600'} my={1}>

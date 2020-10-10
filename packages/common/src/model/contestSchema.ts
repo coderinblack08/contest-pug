@@ -27,7 +27,7 @@ export const contestObject = {
     .required(errors.required('thumbnail')),
   description: Yup.string()
     .min(8, errors.min('description', 8))
-    .max(150, errors.max('description', 5000))
+    .max(5000, errors.max('description', 5000))
     .required(errors.required('description')),
   tags: Yup.array().of(Yup.string().required()).notRequired(),
   length: Yup.number()

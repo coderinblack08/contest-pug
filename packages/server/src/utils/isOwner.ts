@@ -6,6 +6,6 @@ export const isOwner = async (contestId: string, req: any) => {
     throw new Error("Contest doesn't exist");
   }
   if (contest?.creatorId !== req.session.userId) {
-    throw new Error("Contest doesn't exist");
+    throw new Error('Not owner of contest');
   }
 };

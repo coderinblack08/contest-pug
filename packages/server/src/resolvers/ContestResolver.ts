@@ -152,13 +152,16 @@ export class ContestResolver {
       replacments.push(new Date(parseInt(options.cursor)));
     }
 
-    const contests = await getConnection().query(
+    const contests: any[] = await getConnection().query(
       `
       select c.* from contests c
       ${options.cursor ? `where c."createdAt" < $3` : ''}
       inner join contestants t on t."contestId" = c.id and t."userId" = $2
-      order by c."createdAt" DESC
-      limit $1
+      union
+      select * from contests  
+      where "creatorId" = $2 ${options.cursor ? `and "createdAt" < $3` : ''}
+      order by "createdAt" DESC
+      limit $1;
     `,
       replacments
     );

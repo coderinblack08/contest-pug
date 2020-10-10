@@ -24,7 +24,10 @@ import { useRouter } from 'next/router';
 import { Layout } from '../components/helpers/Layout';
 import InputField from '../components/forms/InputField';
 import InputFieldGroup from '../components/forms/InputFieldGroup';
-import { useCreateContestMutation } from '../generated/graphql';
+import {
+  FindContestDocument,
+  useCreateContestMutation,
+} from '../generated/graphql';
 import { toErrorMap } from '../utils/toErrorMap';
 
 const CreateContest: React.FC<{}> = () => {
@@ -65,6 +68,12 @@ const CreateContest: React.FC<{}> = () => {
             };
             const response = await createContest({
               variables: { options: contest },
+              update: (cache, { data }) => {
+                if (data) {
+                  cache.evict({ fieldName: 'joinedContests' });
+                  cache.evict({ fieldName: 'findContests' });
+                }
+              },
             });
             if (response.data?.createContest.errors) {
               const errorMap = toErrorMap(response.data.createContest.errors);

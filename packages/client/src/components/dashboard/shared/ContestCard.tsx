@@ -9,6 +9,8 @@ import {
 import Link from 'next/link';
 import React from 'react';
 import { Contest } from '../../../generated/graphql';
+import { abbreviateNumber } from '../../../utils/abbreviateNumber';
+import { timestampToDate } from '../../../utils/timestampToDate';
 
 interface ContestCardProps {
   contest: Contest;
@@ -45,14 +47,7 @@ export const ContestCard: React.FC<ContestCardProps> = ({
           ) : (
             <>
               <Text color={isDark ? 'gray.400' : 'gray.500'}>
-                {new Date(parseInt(contest.startDate, 10)).toLocaleDateString(
-                  'en',
-                  {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric',
-                  }
-                )}
+                {timestampToDate(contest.startDate)}
               </Text>
               <Heading fontSize="xl" my={2}>
                 {contest.name}
@@ -69,6 +64,9 @@ export const ContestCard: React.FC<ContestCardProps> = ({
           py={3}
           px={5}
           mt="auto"
+          borderTopColor={isDark ? 'gray.700' : 'gray.100'}
+          borderTopStyle="solid"
+          borderTopWidth="1px"
           roundedBottom="md"
         >
           <Flex color={isDark ? 'gray.300' : 'gray.500'} align="center">
@@ -89,7 +87,7 @@ export const ContestCard: React.FC<ContestCardProps> = ({
             {loading ? (
               <Skeleton h={4} w={32} ml={4} />
             ) : (
-              <Text ml={2}>{contest.tags.join(', ')}</Text>
+              <Text ml={2}>{contest.tags.slice(0, 3).join(', ')}</Text>
             )}
           </Flex>
           <Flex ml={5} color={isDark ? 'gray.300' : 'gray.500'} align="center">
@@ -110,7 +108,9 @@ export const ContestCard: React.FC<ContestCardProps> = ({
             {loading ? (
               <Skeleton h={4} w={20} ml={4} />
             ) : (
-              <Text ml={2}>120 Participants</Text>
+              <Text ml={2}>
+                {`${abbreviateNumber(contest.points || 120)} Participants`}
+              </Text>
             )}
           </Flex>
         </Flex>

@@ -19,9 +19,10 @@ import {
 import { Form, Formik } from 'formik';
 import { DotsVertical } from 'heroicons-react';
 import { NextPage } from 'next';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import omitDeep from 'omit-deep';
 import cloneDeep from 'clone-deep';
+import { useRouter } from 'next/router';
 import { ContestNavbar } from '../../components/dashboard/shared/ContestNavbar';
 import InputField from '../../components/forms/InputField';
 import { Layout } from '../../components/helpers/Layout';
@@ -33,6 +34,7 @@ import {
   useDeleteProblemMutation,
   useFindProblemsQuery,
   useGetContestQuery,
+  useMeQuery,
   useUpdateShortAnswerMutation,
 } from '../../generated/graphql';
 
@@ -41,6 +43,8 @@ const Contest: NextPage<{ id: string }> = ({ id }) => {
   const open = () => setIsOpen(true);
   const close = () => setIsOpen(false);
   const { colorMode } = useColorMode();
+  const router = useRouter();
+  const { data: me, loading: meLoading } = useMeQuery();
 
   const isDark = colorMode === 'dark';
   const [updateShortAnswer] = useUpdateShortAnswerMutation();
@@ -49,9 +53,20 @@ const Contest: NextPage<{ id: string }> = ({ id }) => {
     variables: { contestId: id },
   });
   const [createShortAnswer] = useCreateShortAnswerMutation();
-  const { data: contest } = useGetContestQuery({
+  const { data: contest, loading: contestLoading } = useGetContestQuery({
     variables: { contestId: id },
   });
+
+  useEffect(() => {
+    if (!meLoading && !me?.me) {
+      router.push(`/contest/${id}`);
+    } else if (
+      !contestLoading &&
+      contest?.getContest?.creator.id !== me?.me!.id
+    ) {
+      router.push(`/contest/${id}`);
+    }
+  }, [meLoading, me, contestLoading, contest]);
 
   const initialValues = () => {
     if (problems?.findProblems) {

@@ -85,6 +85,7 @@ const Dashboard: React.FC<{}> = () => {
             w="10"
             h="10"
             rounded="full"
+            name={loading ? undefined : me?.me?.name}
             src={
               loading
                 ? undefined
@@ -133,7 +134,13 @@ const Dashboard: React.FC<{}> = () => {
                 </svg>
               </Box>
               <Text fontWeight="medium" fontSize="lg">
-                Reminder! Your next contest Trivia Pug is in 2 days!
+                Reminder! Your next contest
+                {` ${
+                  !loading
+                    ? contests?.joinedContests[0]?.name || '...'
+                    : 'loading'
+                } `}
+                is in 2 days!
               </Text>
               <Button ml="auto" variantColor="primary">
                 Learn More

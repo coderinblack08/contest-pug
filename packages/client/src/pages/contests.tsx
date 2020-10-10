@@ -5,7 +5,6 @@ import {
   ButtonGroup,
   Flex,
   Heading,
-  Icon,
   Link,
   Modal,
   ModalBody,
@@ -15,11 +14,9 @@ import {
   ModalHeader,
   ModalOverlay,
   Skeleton,
-  Text,
   useColorMode,
 } from '@chakra-ui/core';
-import { AnimatePresence, motion } from 'framer-motion';
-import { Adjustments } from 'heroicons-react';
+import { Adjustments, FireOutline } from 'heroicons-react';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
@@ -43,7 +40,6 @@ const Contests: React.FC<{}> = () => {
   const { data: contests } = useFindContestQuery({
     variables: query,
   });
-  const [openBanner, setOpenBanner] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
 
   useEffect(() => {
@@ -67,7 +63,7 @@ const Contests: React.FC<{}> = () => {
   return (
     <Layout>
       <Head>
-        <title>Contest Pug | Dashboard</title>
+        <title>Contest Pug | Contests</title>
       </Head>
       <Flex
         px={8}
@@ -85,6 +81,7 @@ const Contests: React.FC<{}> = () => {
             w="10"
             h="10"
             rounded="full"
+            name={loading ? undefined : me?.me?.name}
             src={
               loading
                 ? undefined
@@ -111,45 +108,6 @@ const Contests: React.FC<{}> = () => {
           </Button>
         </ButtonGroup>
       </Flex>
-      <AnimatePresence>
-        {openBanner ? (
-          <motion.div initial={{ opacity: 1 }} exit={{ opacity: 0 }}>
-            <Flex bg="primary.500" py={4} px={6} align="center" color="white">
-              <Box p={2} bg="primary.600" mr={5} rounded="md">
-                <svg
-                  width="1.5rem"
-                  height="1.5rem"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z"
-                  />
-                </svg>
-              </Box>
-              <Text fontWeight="medium" fontSize="lg">
-                Reminder! Your next contest Trivia Pug is in 2 days!
-              </Text>
-              <Button ml="auto" variantColor="primary">
-                Learn More
-              </Button>
-              <Icon
-                name="close"
-                aria-label="close"
-                ml={5}
-                w={3}
-                cursor="pointer"
-                onClick={() => setOpenBanner(false)}
-              />
-            </Flex>
-          </motion.div>
-        ) : null}
-      </AnimatePresence>
       <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)}>
         <ModalOverlay />
         <ModalContent rounded="md">
@@ -169,10 +127,17 @@ const Contests: React.FC<{}> = () => {
         </ModalContent>
       </Modal>
       <Box p={8}>
-        <Flex justify="space-between" mb={[10, 10, 10, 5]}>
-          <Heading fontSize="xl" fontWeight="semibold">
-            Upcoming Contests
-          </Heading>
+        <Flex
+          justify="space-between"
+          mb={[10, 10, 10, 5]}
+          color={isDark ? 'gray.200' : 'gray.700'}
+        >
+          <Flex align="center">
+            <FireOutline />
+            <Heading fontSize="xl" fontWeight="semibold" ml={1}>
+              Trending Contests
+            </Heading>
+          </Flex>
           <Flex align="center" onClick={() => setModalOpen(true)}>
             <Adjustments size={20} />
             <Link ml={2}>Customize Search</Link>

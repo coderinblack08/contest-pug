@@ -117,6 +117,7 @@ const Settings: React.FC<{}> = () => {
                             <Flex align="center" mt={1}>
                               <Avatar
                                 size="sm"
+                                name={me?.me?.name}
                                 src={`http://localhost:4000/images/${me?.me?.profilePicture}`}
                               />
                               <Text

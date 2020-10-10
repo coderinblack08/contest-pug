@@ -1,5 +1,6 @@
 import {
   Avatar,
+  AvatarBadge,
   Box,
   Flex,
   Heading,
@@ -16,7 +17,6 @@ import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import {
   MeDocument,
-  MeQuery,
   useLogoutMutation,
   useMeQuery,
 } from '../../generated/graphql';
@@ -213,12 +213,15 @@ export const Sidenav: React.FC<{}> = () => {
             w="10"
             h="10"
             rounded="full"
+            name={loading ? undefined : data?.me?.name}
             src={
               loading
                 ? undefined
                 : `http://localhost:4000/images/${data?.me?.profilePicture}`
             }
-          />
+          >
+            <AvatarBadge bg="green.500" size="1rem" />
+          </Avatar>
           <Box ml={4}>
             {loading || !data?.me ? (
               <Skeleton w={32} h={4} />
@@ -271,16 +274,12 @@ export const Sidenav: React.FC<{}> = () => {
                 onClick={async () => {
                   await logout({
                     update: (cache) => {
-                      cache.writeQuery<MeQuery>({
-                        query: MeDocument,
-                        data: {
-                          __typename: 'Query',
-                          me: null,
-                        },
-                      });
+                      cache.reset();
                     },
                   });
-                  router.push('/login');
+                  router.push('/login').then(() => {
+                    router.reload();
+                  });
                 }}
               >
                 Logout

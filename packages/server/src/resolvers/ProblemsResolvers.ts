@@ -1,10 +1,21 @@
-import { Arg, Ctx, Mutation, Query, Resolver } from 'type-graphql';
+import {
+  Arg,
+  Ctx,
+  Mutation,
+  Query,
+  Resolver,
+  UseMiddleware,
+} from 'type-graphql';
 import { getConnection } from 'typeorm';
+import { Contest } from '../entity/Contest';
 import { Problem } from '../entity/Problems';
 import { ShortAnswer } from '../entity/ShortAnswer';
+import { isAuth } from '../middlewares/isAuth';
 import { ProblemQuery } from '../types/graphql/inputs/ProblemQuery';
 import { ProblemsArgs } from '../types/graphql/inputs/ProblemsArgs';
 import { MyContext } from '../types/MyContext';
+import { contestInSession } from '../utils/contestInSession';
+import { isMember } from '../utils/isMember';
 import { isOwner } from '../utils/isOwner';
 
 @Resolver()
@@ -14,7 +25,7 @@ export class ProblemsResolvers {
     @Arg('options') options: ProblemsArgs,
     @Ctx() { req }: MyContext
   ): Promise<Problem> {
-    isOwner(options.contestId, req);
+    await isOwner(options.contestId, req);
 
     const shortAnswer = await ShortAnswer.create({
       question: options.question,
@@ -56,7 +67,7 @@ export class ProblemsResolvers {
     @Arg('problems', () => [ProblemQuery]) problems: Problem[],
     @Ctx() { req }: MyContext
   ) {
-    isOwner(problems[0].contestId, req);
+    await isOwner(problems[0].contestId, req);
     problems.forEach(async (problem) => {
       if (problem.shortAnswer && problem.shortAnswerId) {
         await getConnection().query(
@@ -80,7 +91,7 @@ export class ProblemsResolvers {
     if (!problem) {
       throw new Error('Problem not found');
     }
-    isOwner(problem.contestId, req);
+    await isOwner(problem.contestId, req);
     await Problem.delete(id);
     console.log(problem);
     await ShortAnswer.delete(problem.shortAnswerId!);
@@ -88,7 +99,25 @@ export class ProblemsResolvers {
   }
 
   @Query(() => [Problem])
-  async findProblems(@Arg('contestId') contestId: string) {
+  @UseMiddleware(isAuth)
+  async findProblems(
+    @Arg('contestId') contestId: string,
+    @Ctx() { req }: MyContext
+  ) {
+    const contest = await Contest.findOne(contestId);
+
+    if (!contest) {
+      throw new Error("Contest doesn't exist");
+    }
+
+    console.log(contestInSession(contest));
+
+    if (!contestInSession(contest)) {
+      await isOwner(contestId, req);
+    } else {
+      await isMember(contestId, req);
+    }
+
     const query = await getConnection().query(
       `
       select p.*,
