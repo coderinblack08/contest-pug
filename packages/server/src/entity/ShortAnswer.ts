@@ -27,6 +27,10 @@ export class ShortAnswer extends BaseEntity {
   @Column({ nullable: true })
   solution?: string;
 
+  @Field()
+  @Column()
+  contestId!: string;
+
   @Field(() => Problem)
   @OneToOne(() => Problem, (problem) => problem.shortAnswer)
   problem!: Problem;

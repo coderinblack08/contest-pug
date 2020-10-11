@@ -131,8 +131,8 @@ export const ContestNavbar: React.FC<{ id: string }> = ({ id }) => {
               bg={isDark && pathName === 'compete' ? 'gray.600' : undefined}
               shadow={pathName === 'compete' ? 'sm' : undefined}
               fontWeight="medium"
-              href="/problems/[id]"
-              hrefAs={`/problems/${contest.getContest.id}`}
+              href="/compete/[id]"
+              hrefAs={`/compete/${contest.getContest.id}`}
               _hover={{
                 textDecor: 'none',
               }}
@@ -223,6 +223,9 @@ export const ContestNavbar: React.FC<{ id: string }> = ({ id }) => {
                       },
                     });
                     cache.evict({ fieldName: 'joinedContests' });
+                    if (router.pathname === '/compete/[id]') {
+                      router.push(`/contest/${contest.getContest?.id}`);
+                    }
                   },
                 });
               }}

@@ -1,9 +1,6 @@
 import {
-  Alert,
-  AlertIcon,
   Avatar,
   Box,
-  Button,
   Flex,
   Heading,
   Link,

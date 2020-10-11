@@ -72,6 +72,7 @@ export type Contest = {
   points: Scalars['Int'];
   isContestant?: Maybe<Scalars['Boolean']>;
   isStarred?: Maybe<Scalars['Boolean']>;
+  inSession?: Maybe<Scalars['Boolean']>;
   creator: User;
   createdAt: Scalars['String'];
   updatedAt: Scalars['String'];
@@ -429,7 +430,7 @@ export type GetContestQuery = (
   { __typename?: 'Query' }
   & { getContest?: Maybe<(
     { __typename?: 'Contest' }
-    & Pick<Contest, 'id' | 'name' | 'email' | 'website' | 'thumbnail' | 'description' | 'tags' | 'length' | 'points' | 'startDate' | 'endDate' | 'private' | 'isContestant' | 'isStarred' | 'leaderboard'>
+    & Pick<Contest, 'id' | 'name' | 'email' | 'website' | 'thumbnail' | 'description' | 'tags' | 'length' | 'points' | 'startDate' | 'endDate' | 'private' | 'isContestant' | 'isStarred' | 'inSession' | 'leaderboard'>
     & { creator: (
       { __typename?: 'User' }
       & Pick<User, 'id' | 'name' | 'profilePicture'>
@@ -956,6 +957,7 @@ export const GetContestDocument = gql`
     private
     isContestant
     isStarred
+    inSession
     leaderboard
     creator {
       id

@@ -16,6 +16,7 @@ import { ContestResponse } from '../types/graphql/ContestResponse';
 import { ContestArgs } from '../types/graphql/inputs/ContestArgs';
 import { PaginationArgs } from '../types/graphql/inputs/PaginationArgs';
 import { MyContext } from '../types/MyContext';
+import { contestInSession } from '../utils/contestInSession';
 import { parseYupErrors } from '../utils/parseYupErrors';
 
 @Resolver()
@@ -110,6 +111,7 @@ export class ContestResolver {
     const contestant = await Contestant.findOne(options);
     const star = await Star.findOne(options);
     contest.isContestant = contestant !== undefined;
+    contest.inSession = contestInSession(contest);
     contest.isStarred = star !== undefined;
     return contest;
   }

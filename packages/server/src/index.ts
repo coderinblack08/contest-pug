@@ -17,6 +17,7 @@ import { ProfilePictureResolver } from './resolvers/ProfilePictureResolver';
 import path from 'path';
 import { ContestResolver } from './resolvers/ContestResolver';
 import { ProblemsResolvers } from './resolvers/ProblemsResolvers';
+import { ShortAnswerResolver } from './resolvers/ShortAnswerResolver';
 
 class BasicLogging {
   requestDidStart({ queryString, parsedQuery, variables }: any) {
@@ -84,6 +85,7 @@ const main = async () => {
         UserResolver,
         ContestResolver,
         ProblemsResolvers,
+        ShortAnswerResolver,
         ProfilePictureResolver,
       ],
       validate: false,

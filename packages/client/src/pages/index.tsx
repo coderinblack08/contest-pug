@@ -20,17 +20,17 @@ const Index: React.FC<{}> = () => {
       >
         <FeatureCard
           heading="Easy to Connect"
-          text="Contest Pug allows you to create public contests, meaning that your competition will be exposed to a whole new host of contestants!"
+          text="Contest Pug is a convenient, hassle-free platform. All you have to do is create an account to solve problems and win prizes!"
           icon={<DesktopComputer size={18} color="white" />}
         />
         <FeatureCard
           heading="Advertise your Contest"
-          text="Contest Pug allows you to create public contests, meaning that your competition will be exposed to a whole new host of contestants!"
+          text="As a host, Contest Pug allows you to create private contests for classroom formats and public contests to reach broader audiences."
           icon={<Sparkles size={18} color="white" />}
         />
         <FeatureCard
           heading="Discuss with Others"
-          text="Contest Pug allows contestants to discuss problems after the contest is over, bringing contestants together as a community."
+          text="After contests have ended, contestants will be able to join community discussion forums and engage with fellow learners."
           icon={<Chat size={18} color="white" />}
         />
       </Stack>

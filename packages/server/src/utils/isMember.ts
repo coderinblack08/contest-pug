@@ -6,6 +6,8 @@ export const isMember = async (contestId: string, req: any) => {
     userId: req.session.userId,
   });
 
+  console.log('CONTESTANT ' + JSON.stringify(contestant));
+
   if (!contestant) {
     throw new Error("Contestant doesn't exist");
   }

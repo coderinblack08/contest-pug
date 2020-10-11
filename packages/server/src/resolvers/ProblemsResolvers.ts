@@ -31,6 +31,7 @@ export class ProblemsResolvers {
       question: options.question,
       answer: options.answer,
       solution: options.solution,
+      contestId: options.contestId,
     }).save();
 
     console.log(shortAnswer);
@@ -110,12 +111,16 @@ export class ProblemsResolvers {
       throw new Error("Contest doesn't exist");
     }
 
-    console.log(contestInSession(contest));
+    console.log('INSESSION' + contestInSession(contest));
 
-    if (!contestInSession(contest)) {
-      await isOwner(contestId, req);
+    if (contestInSession(contest)) {
+      try {
+        await isOwner(contestId, req);
+      } catch (error) {
+        await isMember(contestId, req);
+      }
     } else {
-      await isMember(contestId, req);
+      await isOwner(contestId, req);
     }
 
     const query = await getConnection().query(
@@ -125,7 +130,8 @@ export class ProblemsResolvers {
         'id', s.id,
         'question', s.question,
         'solution', s.solution,
-        'answer', s.answer
+        'answer', s.answer,
+        'contestId', s."contestId"
       ) "shortAnswer"
       from problems p
       left join shortanswers s on p."shortAnswerId" = s."id" 
