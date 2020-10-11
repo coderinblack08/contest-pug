@@ -14,7 +14,6 @@ import {
   PopoverTrigger,
   Tag,
   Text,
-  useColorMode,
 } from '@chakra-ui/core';
 import { Form, Formik } from 'formik';
 import { DotsVertical } from 'heroicons-react';
@@ -42,11 +41,11 @@ const Contest: NextPage<{ id: string }> = ({ id }) => {
   const [isOpen, setIsOpen] = useState(false);
   const open = () => setIsOpen(true);
   const close = () => setIsOpen(false);
-  const { colorMode } = useColorMode();
+  // const { colorMode } = useColorMode();
   const router = useRouter();
   const { data: me, loading: meLoading } = useMeQuery();
 
-  const isDark = colorMode === 'dark';
+  // const isDark = colorMode === 'dark';
   const [updateShortAnswer] = useUpdateShortAnswerMutation();
   const [deleteProblem] = useDeleteProblemMutation();
   const { data: problems, variables, refetch } = useFindProblemsQuery({
