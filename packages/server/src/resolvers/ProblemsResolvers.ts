@@ -111,8 +111,6 @@ export class ProblemsResolvers {
       throw new Error("Contest doesn't exist");
     }
 
-    console.log('INSESSION' + contestInSession(contest));
-
     if (contestInSession(contest)) {
       try {
         await isOwner(contestId, req);

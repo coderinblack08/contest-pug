@@ -11,25 +11,13 @@ import { HelloResolver } from './resolvers/HelloResolver';
 import { UserResolver } from './resolvers/UserResolver';
 import session from 'express-session';
 import connectRedis from 'connect-redis';
-import { print } from 'graphql';
 import Redis from 'ioredis';
 import { ProfilePictureResolver } from './resolvers/ProfilePictureResolver';
 import path from 'path';
 import { ContestResolver } from './resolvers/ContestResolver';
 import { ProblemsResolvers } from './resolvers/ProblemsResolvers';
 import { ShortAnswerResolver } from './resolvers/ShortAnswerResolver';
-
-class BasicLogging {
-  requestDidStart({ queryString, parsedQuery, variables }: any) {
-    const query = queryString || print(parsedQuery);
-    console.log(query);
-    console.log(variables);
-  }
-
-  willSendResponse({ graphqlResponse }: any) {
-    console.log(JSON.stringify(graphqlResponse, null, 2));
-  }
-}
+import { AnswersResolver } from './resolvers/ScoreResolver';
 
 const main = async () => {
   const connectionOptions = await getConnectionOptions();
@@ -81,9 +69,10 @@ const main = async () => {
   const apolloServer = new ApolloServer({
     schema: await buildSchema({
       resolvers: [
-        HelloResolver,
         UserResolver,
+        HelloResolver,
         ContestResolver,
+        AnswersResolver,
         ProblemsResolvers,
         ShortAnswerResolver,
         ProfilePictureResolver,
@@ -91,7 +80,7 @@ const main = async () => {
       validate: false,
     }),
     context: ({ req, res }) => ({ req, res, redis }),
-    extensions: [() => new BasicLogging()],
+    // extensions: [() => new BasicLogging()],
     uploads: false,
   });
 

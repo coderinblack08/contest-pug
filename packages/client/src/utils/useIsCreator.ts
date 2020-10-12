@@ -8,8 +8,5 @@ export const useIsCreator = (id: string) => {
   if (!me?.me) {
     return false;
   }
-  if (contest?.getContest?.creator.id === me?.me!.id) {
-    return true;
-  }
-  return false;
+  return contest?.getContest?.creator.id === me?.me!.id;
 };

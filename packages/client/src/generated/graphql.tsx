@@ -21,6 +21,8 @@ export type Query = {
   findContests: Array<Contest>;
   joinedContests: Array<Contest>;
   findProblems: Array<Problem>;
+  hasSubmitted: Scalars['Boolean'];
+  fetchSession?: Maybe<Scalars['String']>;
 };
 
 
@@ -40,6 +42,16 @@ export type QueryJoinedContestsArgs = {
 
 
 export type QueryFindProblemsArgs = {
+  contestId: Scalars['String'];
+};
+
+
+export type QueryHasSubmittedArgs = {
+  contestId: Scalars['String'];
+};
+
+
+export type QueryFetchSessionArgs = {
   contestId: Scalars['String'];
 };
 
@@ -98,6 +110,7 @@ export type ShortAnswer = {
   question?: Maybe<Scalars['String']>;
   answer?: Maybe<Scalars['String']>;
   solution?: Maybe<Scalars['String']>;
+  contestId: Scalars['String'];
   problem: Problem;
 };
 
@@ -116,6 +129,8 @@ export type Mutation = {
   createShortAnswer: Problem;
   updateShortAnswer: Scalars['Boolean'];
   deleteProblem: Scalars['Boolean'];
+  startSession: Scalars['Boolean'];
+  submitAnswers: Scalars['Int'];
 };
 
 
@@ -177,6 +192,16 @@ export type MutationUpdateShortAnswerArgs = {
 
 export type MutationDeleteProblemArgs = {
   id: Scalars['Float'];
+};
+
+
+export type MutationStartSessionArgs = {
+  contestId: Scalars['String'];
+};
+
+
+export type MutationSubmitAnswersArgs = {
+  options: AnswerArgs;
 };
 
 export type UserResponse = {
@@ -244,6 +269,16 @@ export type ShortAnswerQuery = {
   question?: Maybe<Scalars['String']>;
   answer?: Maybe<Scalars['String']>;
   solution?: Maybe<Scalars['String']>;
+};
+
+export type AnswerArgs = {
+  contestId: Scalars['String'];
+  answers: Array<AnswerInput>;
+};
+
+export type AnswerInput = {
+  problemId: Scalars['Float'];
+  answer: Scalars['String'];
 };
 
 export type RegularErrorFragment = (
@@ -449,6 +484,16 @@ export type FindContestQuery = (
     { __typename?: 'Contest' }
     & Pick<Contest, 'id' | 'name' | 'email' | 'website' | 'thumbnail' | 'description' | 'tags' | 'length' | 'startDate' | 'endDate' | 'private' | 'leaderboard'>
   )> }
+);
+
+export type HasSubmittedQueryVariables = Exact<{
+  contestId: Scalars['String'];
+}>;
+
+
+export type HasSubmittedQuery = (
+  { __typename?: 'Query' }
+  & Pick<Query, 'hasSubmitted'>
 );
 
 export type HelloQueryVariables = Exact<{ [key: string]: never; }>;
@@ -1037,6 +1082,37 @@ export function useFindContestLazyQuery(baseOptions?: Apollo.LazyQueryHookOption
 export type FindContestQueryHookResult = ReturnType<typeof useFindContestQuery>;
 export type FindContestLazyQueryHookResult = ReturnType<typeof useFindContestLazyQuery>;
 export type FindContestQueryResult = Apollo.QueryResult<FindContestQuery, FindContestQueryVariables>;
+export const HasSubmittedDocument = gql`
+    query HasSubmitted($contestId: String!) {
+  hasSubmitted(contestId: $contestId)
+}
+    `;
+
+/**
+ * __useHasSubmittedQuery__
+ *
+ * To run a query within a React component, call `useHasSubmittedQuery` and pass it any options that fit your needs.
+ * When your component renders, `useHasSubmittedQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useHasSubmittedQuery({
+ *   variables: {
+ *      contestId: // value for 'contestId'
+ *   },
+ * });
+ */
+export function useHasSubmittedQuery(baseOptions?: Apollo.QueryHookOptions<HasSubmittedQuery, HasSubmittedQueryVariables>) {
+        return Apollo.useQuery<HasSubmittedQuery, HasSubmittedQueryVariables>(HasSubmittedDocument, baseOptions);
+      }
+export function useHasSubmittedLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<HasSubmittedQuery, HasSubmittedQueryVariables>) {
+          return Apollo.useLazyQuery<HasSubmittedQuery, HasSubmittedQueryVariables>(HasSubmittedDocument, baseOptions);
+        }
+export type HasSubmittedQueryHookResult = ReturnType<typeof useHasSubmittedQuery>;
+export type HasSubmittedLazyQueryHookResult = ReturnType<typeof useHasSubmittedLazyQuery>;
+export type HasSubmittedQueryResult = Apollo.QueryResult<HasSubmittedQuery, HasSubmittedQueryVariables>;
 export const HelloDocument = gql`
     query Hello {
   hello

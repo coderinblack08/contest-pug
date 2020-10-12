@@ -14,17 +14,34 @@ import {
   SparklesOutline,
 } from 'heroicons-react';
 import { NextPage } from 'next';
-import React from 'react';
+import { useRouter } from 'next/router';
+import React, { useEffect } from 'react';
 import { ContestNavbar } from '../../components/dashboard/shared/ContestNavbar';
 import { Layout } from '../../components/helpers/Layout';
-import { useGetContestQuery } from '../../generated/graphql';
+import {
+  useGetContestQuery,
+  useHasSubmittedQuery,
+} from '../../generated/graphql';
 import { timestampToDate } from '../../utils/timestampToDate';
+import { useIsMember } from '../../utils/useIsMember';
 
 const Compete: NextPage<{ id: string }> = ({ id }) => {
+  const isMember = useIsMember();
   const { colorMode } = useColorMode();
   const isDark = colorMode === 'dark';
+  const { data: hasSubmitted } = useHasSubmittedQuery({
+    variables: { contestId: id },
+  });
   const { data: contest } = useGetContestQuery({
     variables: { contestId: id },
+  });
+
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!isMember) {
+      router.push(`/contest/${id}`);
+    }
   });
 
   if (contest?.getContest) {
@@ -111,7 +128,10 @@ const Compete: NextPage<{ id: string }> = ({ id }) => {
             <Box py={4}>
               <Button
                 variantColor="primary"
-                isDisabled={!contest.getContest.inSession!}
+                isDisabled={
+                  !contest.getContest.inSession! || hasSubmitted?.hasSubmitted
+                }
+                onClick={() => router.push(`/test-session/${id}`)}
               >
                 <Flex>
                   <SparklesOutline size={18} />

@@ -3,21 +3,20 @@ import { Box, Button, Flex, Heading, Image, Text } from '@chakra-ui/core';
 import React from 'react';
 
 export const CTASection: React.FC<{}> = () => (
-  <Box w="100%" my={32} pos="relative">
+  <Box w="100%" my={[20, 20, 20, 32]} pos="relative">
     <Flex
       justify="center"
       align="flex-start"
       pos="relative"
       direction={['column', 'column', 'column', 'row']}
     >
-      <Flex justify="center">
+      <Flex justify="center" align="center" w="100%">
         <Image
           src={require('../../static/images/contestpug.svg')}
-          w={['20rem', '20rem', '20rem', '35rem']}
-          zIndex={2}
+          w={['18rem', '20rem', '26rem', '35rem']}
           maxW="680px"
-          mb={10}
-          mr={12}
+          mb={[2, 2, 2, 10]}
+          mr={[0, 0, 0, 12]}
         />
       </Flex>
       <Box maxW="680px" px={5} mt={20}>

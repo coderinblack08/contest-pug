@@ -1,0 +1,3 @@
+query HasSubmitted($contestId: String!) {
+  hasSubmitted(contestId: $contestId)
+}
