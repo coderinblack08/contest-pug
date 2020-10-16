@@ -21,6 +21,8 @@ export type Query = {
   findContests: Array<Contest>;
   joinedContests: Array<Contest>;
   findProblems: Array<Problem>;
+  getScore: Scalars['Int'];
+  findScores: Array<ScoreResponse>;
   hasSubmitted: Scalars['Boolean'];
   fetchSession?: Maybe<Scalars['String']>;
 };
@@ -42,6 +44,11 @@ export type QueryJoinedContestsArgs = {
 
 
 export type QueryFindProblemsArgs = {
+  contestId: Scalars['String'];
+};
+
+
+export type QueryGetScoreArgs = {
   contestId: Scalars['String'];
 };
 
@@ -114,6 +121,13 @@ export type ShortAnswer = {
   problem: Problem;
 };
 
+export type ScoreResponse = {
+  __typename?: 'ScoreResponse';
+  total: Scalars['Float'];
+  scored: Scalars['Float'];
+  contest: Contest;
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   register: UserResponse;
@@ -129,6 +143,7 @@ export type Mutation = {
   createShortAnswer: Problem;
   updateShortAnswer: Scalars['Boolean'];
   deleteProblem: Scalars['Boolean'];
+  removeSession: Scalars['Boolean'];
   startSession: Scalars['Boolean'];
   submitAnswers: Scalars['Int'];
 };
@@ -192,6 +207,11 @@ export type MutationUpdateShortAnswerArgs = {
 
 export type MutationDeleteProblemArgs = {
   id: Scalars['Float'];
+};
+
+
+export type MutationRemoveSessionArgs = {
+  contestId: Scalars['String'];
 };
 
 
@@ -416,6 +436,26 @@ export type StarContestMutation = (
   & Pick<Mutation, 'starContest'>
 );
 
+export type StartSessionMutationVariables = Exact<{
+  contestId: Scalars['String'];
+}>;
+
+
+export type StartSessionMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'startSession'>
+);
+
+export type SubmitAnswersMutationVariables = Exact<{
+  options: AnswerArgs;
+}>;
+
+
+export type SubmitAnswersMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'submitAnswers'>
+);
+
 export type ToggleContestantMutationVariables = Exact<{
   contestId: Scalars['String'];
 }>;
@@ -465,7 +505,7 @@ export type GetContestQuery = (
   { __typename?: 'Query' }
   & { getContest?: Maybe<(
     { __typename?: 'Contest' }
-    & Pick<Contest, 'id' | 'name' | 'email' | 'website' | 'thumbnail' | 'description' | 'tags' | 'length' | 'points' | 'startDate' | 'endDate' | 'private' | 'isContestant' | 'isStarred' | 'inSession' | 'leaderboard'>
+    & Pick<Contest, 'id' | 'name' | 'email' | 'website' | 'thumbnail' | 'description' | 'open' | 'tags' | 'length' | 'points' | 'startDate' | 'endDate' | 'private' | 'isContestant' | 'isStarred' | 'inSession' | 'leaderboard'>
     & { creator: (
       { __typename?: 'User' }
       & Pick<User, 'id' | 'name' | 'profilePicture'>
@@ -483,6 +523,31 @@ export type FindContestQuery = (
   & { findContests: Array<(
     { __typename?: 'Contest' }
     & Pick<Contest, 'id' | 'name' | 'email' | 'website' | 'thumbnail' | 'description' | 'tags' | 'length' | 'startDate' | 'endDate' | 'private' | 'leaderboard'>
+  )> }
+);
+
+export type FetchSessionQueryVariables = Exact<{
+  contestId: Scalars['String'];
+}>;
+
+
+export type FetchSessionQuery = (
+  { __typename?: 'Query' }
+  & Pick<Query, 'fetchSession'>
+);
+
+export type FindScoresQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type FindScoresQuery = (
+  { __typename?: 'Query' }
+  & { findScores: Array<(
+    { __typename?: 'ScoreResponse' }
+    & Pick<ScoreResponse, 'total' | 'scored'>
+    & { contest: (
+      { __typename?: 'Contest' }
+      & Pick<Contest, 'name'>
+    ) }
   )> }
 );
 
@@ -865,6 +930,66 @@ export function useStarContestMutation(baseOptions?: Apollo.MutationHookOptions<
 export type StarContestMutationHookResult = ReturnType<typeof useStarContestMutation>;
 export type StarContestMutationResult = Apollo.MutationResult<StarContestMutation>;
 export type StarContestMutationOptions = Apollo.BaseMutationOptions<StarContestMutation, StarContestMutationVariables>;
+export const StartSessionDocument = gql`
+    mutation StartSession($contestId: String!) {
+  startSession(contestId: $contestId)
+}
+    `;
+export type StartSessionMutationFn = Apollo.MutationFunction<StartSessionMutation, StartSessionMutationVariables>;
+
+/**
+ * __useStartSessionMutation__
+ *
+ * To run a mutation, you first call `useStartSessionMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useStartSessionMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [startSessionMutation, { data, loading, error }] = useStartSessionMutation({
+ *   variables: {
+ *      contestId: // value for 'contestId'
+ *   },
+ * });
+ */
+export function useStartSessionMutation(baseOptions?: Apollo.MutationHookOptions<StartSessionMutation, StartSessionMutationVariables>) {
+        return Apollo.useMutation<StartSessionMutation, StartSessionMutationVariables>(StartSessionDocument, baseOptions);
+      }
+export type StartSessionMutationHookResult = ReturnType<typeof useStartSessionMutation>;
+export type StartSessionMutationResult = Apollo.MutationResult<StartSessionMutation>;
+export type StartSessionMutationOptions = Apollo.BaseMutationOptions<StartSessionMutation, StartSessionMutationVariables>;
+export const SubmitAnswersDocument = gql`
+    mutation SubmitAnswers($options: AnswerArgs!) {
+  submitAnswers(options: $options)
+}
+    `;
+export type SubmitAnswersMutationFn = Apollo.MutationFunction<SubmitAnswersMutation, SubmitAnswersMutationVariables>;
+
+/**
+ * __useSubmitAnswersMutation__
+ *
+ * To run a mutation, you first call `useSubmitAnswersMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSubmitAnswersMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [submitAnswersMutation, { data, loading, error }] = useSubmitAnswersMutation({
+ *   variables: {
+ *      options: // value for 'options'
+ *   },
+ * });
+ */
+export function useSubmitAnswersMutation(baseOptions?: Apollo.MutationHookOptions<SubmitAnswersMutation, SubmitAnswersMutationVariables>) {
+        return Apollo.useMutation<SubmitAnswersMutation, SubmitAnswersMutationVariables>(SubmitAnswersDocument, baseOptions);
+      }
+export type SubmitAnswersMutationHookResult = ReturnType<typeof useSubmitAnswersMutation>;
+export type SubmitAnswersMutationResult = Apollo.MutationResult<SubmitAnswersMutation>;
+export type SubmitAnswersMutationOptions = Apollo.BaseMutationOptions<SubmitAnswersMutation, SubmitAnswersMutationVariables>;
 export const ToggleContestantDocument = gql`
     mutation ToggleContestant($contestId: String!) {
   toggleContestant(contestId: $contestId)
@@ -994,6 +1119,7 @@ export const GetContestDocument = gql`
     website
     thumbnail
     description
+    open
     tags
     length
     points
@@ -1082,6 +1208,73 @@ export function useFindContestLazyQuery(baseOptions?: Apollo.LazyQueryHookOption
 export type FindContestQueryHookResult = ReturnType<typeof useFindContestQuery>;
 export type FindContestLazyQueryHookResult = ReturnType<typeof useFindContestLazyQuery>;
 export type FindContestQueryResult = Apollo.QueryResult<FindContestQuery, FindContestQueryVariables>;
+export const FetchSessionDocument = gql`
+    query FetchSession($contestId: String!) {
+  fetchSession(contestId: $contestId)
+}
+    `;
+
+/**
+ * __useFetchSessionQuery__
+ *
+ * To run a query within a React component, call `useFetchSessionQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFetchSessionQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFetchSessionQuery({
+ *   variables: {
+ *      contestId: // value for 'contestId'
+ *   },
+ * });
+ */
+export function useFetchSessionQuery(baseOptions?: Apollo.QueryHookOptions<FetchSessionQuery, FetchSessionQueryVariables>) {
+        return Apollo.useQuery<FetchSessionQuery, FetchSessionQueryVariables>(FetchSessionDocument, baseOptions);
+      }
+export function useFetchSessionLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FetchSessionQuery, FetchSessionQueryVariables>) {
+          return Apollo.useLazyQuery<FetchSessionQuery, FetchSessionQueryVariables>(FetchSessionDocument, baseOptions);
+        }
+export type FetchSessionQueryHookResult = ReturnType<typeof useFetchSessionQuery>;
+export type FetchSessionLazyQueryHookResult = ReturnType<typeof useFetchSessionLazyQuery>;
+export type FetchSessionQueryResult = Apollo.QueryResult<FetchSessionQuery, FetchSessionQueryVariables>;
+export const FindScoresDocument = gql`
+    query FindScores {
+  findScores {
+    total
+    scored
+    contest {
+      name
+    }
+  }
+}
+    `;
+
+/**
+ * __useFindScoresQuery__
+ *
+ * To run a query within a React component, call `useFindScoresQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFindScoresQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFindScoresQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useFindScoresQuery(baseOptions?: Apollo.QueryHookOptions<FindScoresQuery, FindScoresQueryVariables>) {
+        return Apollo.useQuery<FindScoresQuery, FindScoresQueryVariables>(FindScoresDocument, baseOptions);
+      }
+export function useFindScoresLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FindScoresQuery, FindScoresQueryVariables>) {
+          return Apollo.useLazyQuery<FindScoresQuery, FindScoresQueryVariables>(FindScoresDocument, baseOptions);
+        }
+export type FindScoresQueryHookResult = ReturnType<typeof useFindScoresQuery>;
+export type FindScoresLazyQueryHookResult = ReturnType<typeof useFindScoresLazyQuery>;
+export type FindScoresQueryResult = Apollo.QueryResult<FindScoresQuery, FindScoresQueryVariables>;
 export const HasSubmittedDocument = gql`
     query HasSubmitted($contestId: String!) {
   hasSubmitted(contestId: $contestId)

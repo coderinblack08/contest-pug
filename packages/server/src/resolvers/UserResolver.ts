@@ -118,7 +118,7 @@ export class UserResolver {
       forgot_password_prefix + token,
       user.id,
       'ex',
-      1000 * 60 * 60 * 24
+      60 * 60 * 24
     );
     await sendEmail(
       email,

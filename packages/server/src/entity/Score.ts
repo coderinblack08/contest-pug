@@ -6,14 +6,14 @@ import {
   JoinColumn,
   ManyToOne,
   PrimaryColumn,
+  CreateDateColumn,
 } from 'typeorm';
 import { Contest } from './Contest';
-import { Problem } from './Problems';
 import { User } from './User';
 
-@Entity('answers')
+@Entity('scores')
 @ObjectType()
-export class Answer extends BaseEntity {
+export class Score extends BaseEntity {
   @Field()
   @PrimaryColumn()
   contestId!: string;
@@ -24,19 +24,11 @@ export class Answer extends BaseEntity {
 
   @Field()
   @Column()
-  answer!: string;
+  total!: number;
 
   @Field()
   @Column()
-  points!: number;
-
-  @Field()
-  @PrimaryColumn()
-  problemId!: number;
-
-  @ManyToOne(() => Problem)
-  @JoinColumn()
-  problem!: Problem;
+  scored!: number;
 
   @Field()
   @PrimaryColumn()
@@ -45,4 +37,12 @@ export class Answer extends BaseEntity {
   @ManyToOne(() => User)
   @JoinColumn()
   user!: User;
+
+  @Field(() => String)
+  @CreateDateColumn()
+  createdAt!: Date;
+
+  @Field(() => String)
+  @CreateDateColumn()
+  updatedAt!: Date;
 }

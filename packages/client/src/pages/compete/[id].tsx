@@ -9,6 +9,7 @@ import {
   useColorMode,
 } from '@chakra-ui/core';
 import {
+  BadgeCheckOutline,
   CalendarOutline,
   ClockOutline,
   SparklesOutline,
@@ -21,28 +22,33 @@ import { Layout } from '../../components/helpers/Layout';
 import {
   useGetContestQuery,
   useHasSubmittedQuery,
+  useMeQuery,
 } from '../../generated/graphql';
 import { timestampToDate } from '../../utils/timestampToDate';
 import { useIsMember } from '../../utils/useIsMember';
 
 const Compete: NextPage<{ id: string }> = ({ id }) => {
-  const isMember = useIsMember();
+  const isMember = useIsMember(id);
   const { colorMode } = useColorMode();
   const isDark = colorMode === 'dark';
   const { data: hasSubmitted } = useHasSubmittedQuery({
     variables: { contestId: id },
   });
-  const { data: contest } = useGetContestQuery({
+  const { data: contest, loading: contestLoading } = useGetContestQuery({
     variables: { contestId: id },
   });
+
+  const { data: me, loading: meLoading } = useMeQuery();
 
   const router = useRouter();
 
   useEffect(() => {
-    if (!isMember) {
+    if (!me?.me && !meLoading) {
+      router.push(`/contest/${id}`);
+    } else if (!isMember && !contestLoading && !meLoading) {
       router.push(`/contest/${id}`);
     }
-  });
+  }, [isMember, contestLoading, meLoading, me]);
 
   if (contest?.getContest) {
     return (
@@ -113,11 +119,36 @@ const Compete: NextPage<{ id: string }> = ({ id }) => {
                 </Box>
               </Flex>
             </Box>
+            <Box pb={2}>
+              <Flex align="center" mb={1}>
+                <BadgeCheckOutline size={18} />
+                <Heading
+                  color={isDark ? 'gray.200' : 'gray.700'}
+                  ml={1}
+                  as="h6"
+                  fontSize="md"
+                  fontWeight="semibold"
+                >
+                  Contest Open
+                  <Text
+                    ml={2}
+                    display="inline"
+                    color={isDark ? 'gray.300' : 'gray.600'}
+                    fontWeight="normal"
+                  >
+                    (overrides submission dates)
+                  </Text>
+                </Heading>
+              </Flex>
+              <Text color={isDark ? 'gray.300' : 'gray.600'}>
+                {contest.getContest.open ? 'Yes' : 'No'}
+              </Text>
+            </Box>
             <Alert
               status="info"
               alignItems="flex-start"
               my={2}
-              w="lg"
+              maxW="lg"
               rounded="md"
               color={isDark ? 'blue.100' : 'blue.600'}
             >

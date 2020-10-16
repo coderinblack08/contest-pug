@@ -6,6 +6,7 @@ query GetContest($contestId: String!) {
     website
     thumbnail
     description
+    open
     tags
     length
     points

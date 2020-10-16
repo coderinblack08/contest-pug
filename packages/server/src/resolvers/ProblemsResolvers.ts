@@ -7,6 +7,7 @@ import {
   UseMiddleware,
 } from 'type-graphql';
 import { getConnection } from 'typeorm';
+import { contest_session_prefix } from '../constants';
 import { Contest } from '../entity/Contest';
 import { Problem } from '../entity/Problems';
 import { ShortAnswer } from '../entity/ShortAnswer';
@@ -103,7 +104,7 @@ export class ProblemsResolvers {
   @UseMiddleware(isAuth)
   async findProblems(
     @Arg('contestId') contestId: string,
-    @Ctx() { req }: MyContext
+    @Ctx() { req, redis }: MyContext
   ) {
     const contest = await Contest.findOne(contestId);
 
@@ -116,6 +117,14 @@ export class ProblemsResolvers {
         await isOwner(contestId, req);
       } catch (error) {
         await isMember(contestId, req);
+
+        const userSession = await redis.get(
+          contest_session_prefix + contestId + req.session.userId
+        );
+
+        if (!userSession) {
+          throw new Error("User hasn't started the contest");
+        }
       }
     } else {
       await isOwner(contestId, req);

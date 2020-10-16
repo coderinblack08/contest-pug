@@ -1,0 +1,3 @@
+query FetchSession($contestId: String!) {
+  fetchSession(contestId: $contestId)
+}

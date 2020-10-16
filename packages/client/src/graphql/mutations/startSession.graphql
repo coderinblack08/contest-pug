@@ -1,0 +1,3 @@
+mutation StartSession($contestId: String!) {
+  startSession(contestId: $contestId)
+}

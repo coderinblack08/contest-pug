@@ -5,6 +5,11 @@ import {
   ButtonGroup,
   Flex,
   Heading,
+  IconButton,
+  Input,
+  InputGroup,
+  InputLeftElement,
+  InputRightElement,
   Link,
   Modal,
   ModalBody,
@@ -13,10 +18,11 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
+  PseudoBox,
   Skeleton,
   useColorMode,
 } from '@chakra-ui/core';
-import { Adjustments, FireOutline } from 'heroicons-react';
+import { Adjustments, ArrowRight, SearchOutline } from 'heroicons-react';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
@@ -30,7 +36,7 @@ import {
 } from '../generated/graphql';
 import { client } from './_app';
 
-const Contests: React.FC<{}> = () => {
+const Search: React.FC<{}> = () => {
   const router = useRouter();
   const { colorMode } = useColorMode();
   const isDark = colorMode === 'dark';
@@ -59,6 +65,8 @@ const Contests: React.FC<{}> = () => {
       }
     })();
   }, []);
+
+  const [search, setSearch] = useState('');
 
   return (
     <Layout>
@@ -95,9 +103,6 @@ const Contests: React.FC<{}> = () => {
           </Box>
         </Flex>
         <ButtonGroup spacing={4}>
-          <Button leftIcon="search" variantColor="primary" variant="solid">
-            Search
-          </Button>
           <Button
             rightIcon="arrow-forward"
             variantColor="primary"
@@ -132,11 +137,39 @@ const Contests: React.FC<{}> = () => {
           mb={[10, 10, 10, 5]}
           color={isDark ? 'gray.200' : 'gray.700'}
         >
-          <Flex align="center">
-            <FireOutline />
-            <Heading fontSize="xl" fontWeight="semibold" ml={1}>
-              Trending Contests
-            </Heading>
+          <Flex align="flex-end">
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                console.log(search);
+              }}
+            >
+              <InputGroup>
+                <InputLeftElement color={isDark ? 'gray.400' : 'gray.500'}>
+                  <SearchOutline size={18} />
+                </InputLeftElement>
+                <Input
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                    setSearch(e.target.value);
+                  }}
+                  placeholder="Search contests"
+                  variant="flushed"
+                  w={['100%', 'xs', 'md', 'lg']}
+                />
+                <InputRightElement
+                  color={isDark ? 'gray.400' : 'gray.500'}
+                  cursor="pointer"
+                >
+                  <IconButton
+                    type="submit"
+                    aria-label="Search"
+                    icon={ArrowRight}
+                    variant="unstyled"
+                    size="xs"
+                  />
+                </InputRightElement>
+              </InputGroup>
+            </form>
           </Flex>
           <Flex align="center" onClick={() => setModalOpen(true)}>
             <Adjustments size={20} />
@@ -178,4 +211,4 @@ const Contests: React.FC<{}> = () => {
   );
 };
 
-export default Contests;
+export default Search;

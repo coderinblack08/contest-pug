@@ -1,30 +1,91 @@
-import { Arg, Ctx, Int, Mutation, Query, Resolver } from 'type-graphql';
+import {
+  Arg,
+  Ctx,
+  Field,
+  Int,
+  Mutation,
+  ObjectType,
+  Query,
+  Resolver,
+} from 'type-graphql';
 import { getConnection } from 'typeorm';
-import { contest_session_prefix } from '../constants';
+import {
+  contest_session_prefix,
+  contest_submission_prefix,
+} from '../constants';
 import { Answer } from '../entity/Answer';
 import { Contest } from '../entity/Contest';
+import { Score } from '../entity/Score';
 import { AnswerArgs } from '../types/graphql/inputs/AnswerArgs';
 import { MyContext } from '../types/MyContext';
 import { contestInSession } from '../utils/contestInSession';
 import { isMember } from '../utils/isMember';
 
+@ObjectType()
+class ScoreResponse {
+  @Field() total!: number;
+  @Field() scored!: number;
+  @Field() contest!: Contest;
+}
+
 @Resolver()
 export class AnswersResolver {
+  @Query(() => Int)
+  async getScore(
+    @Arg('contestId') contestId: string
+    // @Ctx() { req, redis }: MyContext
+  ) {
+    const contest = await Contest.findOne(contestId);
+    if (!contest) {
+      throw new Error("Contest doesn't exist");
+    }
+  }
+
+  @Query(() => [ScoreResponse])
+  async findScores(@Ctx() { req }: MyContext) {
+    const scores = await Score.find({
+      where: { userId: req.session.userId },
+      order: { createdAt: 'DESC' },
+      relations: ['contest'],
+    });
+    return scores;
+  }
+
   @Query(() => Boolean)
   async hasSubmitted(
     @Arg('contestId') contestId: string,
-    @Ctx() { req }: MyContext
+    @Ctx() { req, redis }: MyContext
   ) {
-    const hasAnswers = await Answer.find({
-      contestId,
-      userId: req.session.userId,
-    });
+    const contest = await Contest.findOne(contestId);
+    if (!contest) {
+      throw new Error("Contest doesn't exist");
+    }
+    const submission = await redis.get(
+      contest_submission_prefix + contestId + req.session.userId
+    );
 
-    if (hasAnswers.length > 0) {
+    if (!submission) {
+      return false;
+    }
+
+    if (submission.startsWith('FINSIHED:')) {
       return true;
     }
 
-    return false;
+    return (
+      new Date(submission).getTime() + contest.length * 60 * 1000 <
+      new Date().getTime()
+    );
+  }
+
+  @Mutation(() => Boolean)
+  async removeSession(
+    @Arg('contestId') contestId: string,
+    @Ctx() { req, redis }: MyContext
+  ) {
+    await redis.del(contest_submission_prefix + contestId + req.session.userId);
+    await redis.del(contest_session_prefix + contestId + req.session.userId);
+    return true;
   }
 
   @Query(() => String, { nullable: true })
@@ -53,13 +114,12 @@ export class AnswersResolver {
       throw new Error('Contest not currently in session!');
     }
 
-    const hasAnswers = await Answer.find({
-      contestId,
-      userId: req.session.userId,
-    });
+    const hasSubmitted = await redis.get(
+      contest_submission_prefix + contestId + req.session.userId
+    );
 
-    if (hasAnswers.length > 0) {
-      throw new Error('You already submitted to the contest!');
+    if (hasSubmitted) {
+      throw new Error('User already submitted');
     }
 
     const hasSession = await redis.get(
@@ -74,7 +134,12 @@ export class AnswersResolver {
       contest_session_prefix + contestId + req.session.userId,
       new Date().toString(),
       'ex',
-      1000 * (60 * contest.length + 1) // add extra second for latency and frontend delay
+      60 * contest.length + 1 // add extra second for latency and frontend delay
+    );
+
+    await redis.set(
+      contest_submission_prefix + contestId + req.session.userId,
+      new Date(new Date().getTime() + contest.length * 60).toISOString()
     );
 
     return true;
@@ -120,24 +185,39 @@ export class AnswersResolver {
 
       problems.forEach(async (problem: any, index: number) => {
         const answer = options.answers[index];
+        let points = 0;
 
         if (problem.answer === answer.answer) {
           scoredPoints += problem.points;
+          points = problem.points;
         }
 
         totalPoints += problem.points;
 
+        console.log('POINTS: ' + points);
+
         await Answer.create({
+          points,
           contestId,
           answer: answer.answer,
           problemId: problem.id,
           userId: req.session.userId,
         }).save();
-
-        await redis.del(
-          contest_session_prefix + contestId + req.session.userId
-        );
       });
+
+      await Score.create({
+        contestId,
+        total: totalPoints,
+        scored: scoredPoints,
+        userId: req.session.userId,
+      }).save();
+
+      await redis.set(
+        contest_submission_prefix + contestId + req.session.userId,
+        'FINSIHED:' + new Date().toISOString()
+      );
+
+      await redis.del(contest_session_prefix + contestId + req.session.userId);
 
       console.log(`🎉 ${scoredPoints} / ${totalPoints}, Good Job 👍!`);
 

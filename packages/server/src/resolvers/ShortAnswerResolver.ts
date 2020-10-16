@@ -8,7 +8,6 @@ export class ShortAnswerResolver {
   @FieldResolver(() => String)
   async answer(@Root() shortAnswer: ShortAnswer, @Ctx() { req }: MyContext) {
     try {
-      console.log('CONTESTID' + shortAnswer.contestId);
       await isOwner(shortAnswer.contestId, req);
       return shortAnswer.answer;
     } catch (error) {

@@ -35,7 +35,7 @@ const InputField: React.FC<InputFieldProps> = ({
       {date ? (
         <Box mr={2}>
           <FormLabel htmlFor="startDate" mb={1}>
-            Submission Start Date
+            {label}
           </FormLabel>
           <Input
             p={2}

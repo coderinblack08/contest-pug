@@ -30,5 +30,6 @@ module.exports = {
     'operator-linebreak': 'off',
     'no-nested-ternary': 'off',
     'comma-dangle': 'off',
+    'implicit-arrow-linebreak': 'off',
   },
 };
