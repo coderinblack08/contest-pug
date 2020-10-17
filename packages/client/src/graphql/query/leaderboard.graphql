@@ -1,0 +1,10 @@
+query LeaderBoard($contestId: String!) {
+  leaderboard(contestId: $contestId) {
+    scored
+    total
+    user {
+      name
+      profilePicture
+    }
+  }
+}

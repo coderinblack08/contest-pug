@@ -50,6 +50,8 @@ const Compete: NextPage<{ id: string }> = ({ id }) => {
     }
   }, [isMember, contestLoading, meLoading, me]);
 
+  console.log(hasSubmitted?.hasSubmitted);
+
   if (contest?.getContest) {
     return (
       <Layout>

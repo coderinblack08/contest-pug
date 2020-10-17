@@ -21,7 +21,7 @@ export type Query = {
   findContests: Array<Contest>;
   joinedContests: Array<Contest>;
   findProblems: Array<Problem>;
-  getScore: Scalars['Int'];
+  leaderboard: Array<LeaderboardResponse>;
   findScores: Array<ScoreResponse>;
   hasSubmitted: Scalars['Boolean'];
   fetchSession?: Maybe<Scalars['String']>;
@@ -48,7 +48,7 @@ export type QueryFindProblemsArgs = {
 };
 
 
-export type QueryGetScoreArgs = {
+export type QueryLeaderboardArgs = {
   contestId: Scalars['String'];
 };
 
@@ -119,6 +119,13 @@ export type ShortAnswer = {
   solution?: Maybe<Scalars['String']>;
   contestId: Scalars['String'];
   problem: Problem;
+};
+
+export type LeaderboardResponse = {
+  __typename?: 'LeaderboardResponse';
+  total: Scalars['Float'];
+  scored: Scalars['Float'];
+  user: User;
 };
 
 export type ScoreResponse = {
@@ -579,6 +586,23 @@ export type JoinedContestsQuery = (
   & { joinedContests: Array<(
     { __typename?: 'Contest' }
     & Pick<Contest, 'id' | 'name' | 'email' | 'website' | 'thumbnail' | 'description' | 'tags' | 'length' | 'startDate' | 'endDate' | 'private' | 'leaderboard'>
+  )> }
+);
+
+export type LeaderBoardQueryVariables = Exact<{
+  contestId: Scalars['String'];
+}>;
+
+
+export type LeaderBoardQuery = (
+  { __typename?: 'Query' }
+  & { leaderboard: Array<(
+    { __typename?: 'LeaderboardResponse' }
+    & Pick<LeaderboardResponse, 'scored' | 'total'>
+    & { user: (
+      { __typename?: 'User' }
+      & Pick<User, 'name' | 'profilePicture'>
+    ) }
   )> }
 );
 
@@ -1380,6 +1404,44 @@ export function useJoinedContestsLazyQuery(baseOptions?: Apollo.LazyQueryHookOpt
 export type JoinedContestsQueryHookResult = ReturnType<typeof useJoinedContestsQuery>;
 export type JoinedContestsLazyQueryHookResult = ReturnType<typeof useJoinedContestsLazyQuery>;
 export type JoinedContestsQueryResult = Apollo.QueryResult<JoinedContestsQuery, JoinedContestsQueryVariables>;
+export const LeaderBoardDocument = gql`
+    query LeaderBoard($contestId: String!) {
+  leaderboard(contestId: $contestId) {
+    scored
+    total
+    user {
+      name
+      profilePicture
+    }
+  }
+}
+    `;
+
+/**
+ * __useLeaderBoardQuery__
+ *
+ * To run a query within a React component, call `useLeaderBoardQuery` and pass it any options that fit your needs.
+ * When your component renders, `useLeaderBoardQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useLeaderBoardQuery({
+ *   variables: {
+ *      contestId: // value for 'contestId'
+ *   },
+ * });
+ */
+export function useLeaderBoardQuery(baseOptions?: Apollo.QueryHookOptions<LeaderBoardQuery, LeaderBoardQueryVariables>) {
+        return Apollo.useQuery<LeaderBoardQuery, LeaderBoardQueryVariables>(LeaderBoardDocument, baseOptions);
+      }
+export function useLeaderBoardLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<LeaderBoardQuery, LeaderBoardQueryVariables>) {
+          return Apollo.useLazyQuery<LeaderBoardQuery, LeaderBoardQueryVariables>(LeaderBoardDocument, baseOptions);
+        }
+export type LeaderBoardQueryHookResult = ReturnType<typeof useLeaderBoardQuery>;
+export type LeaderBoardLazyQueryHookResult = ReturnType<typeof useLeaderBoardLazyQuery>;
+export type LeaderBoardQueryResult = Apollo.QueryResult<LeaderBoardQuery, LeaderBoardQueryVariables>;
 export const MeDocument = gql`
     query Me {
   me {

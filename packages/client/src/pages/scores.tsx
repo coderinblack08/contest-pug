@@ -50,7 +50,7 @@ const Scores: React.FC = () => {
           </Stat>
         </StatGroup>
         <Flex>
-          {scores?.findScores.length && !scoresLoading > 0 ? (
+          {scores?.findScores.length! > 0 && !scoresLoading ? (
             <Box
               bg={isDark ? 'gray.700' : 'white'}
               shadow="xl"
@@ -69,7 +69,7 @@ const Scores: React.FC = () => {
                   {scores?.findScores[0].contest.name}
                 </Text>
               </Heading>
-              <Text color={isDark ? 'gray.300' : 'gray.600'}>
+              <Text color={isDark ? 'gray.300' : 'gray.600'} mb={8}>
                 <span role="img">{'🥳 '}</span>
                 Congrats on your great work!
               </Text>
@@ -80,20 +80,44 @@ const Scores: React.FC = () => {
                   points
                   <Text color={isDark ? 'gray.300' : 'gray.500'} ml={2}>
                     (
-                    {(
-                      scores?.findScores[0].scored / scores?.findScores[0].total
-                    ).toPrecision(2) * 100}
+                    {scores?.findScores[0].total === 0
+                      ? '100'
+                      : parseInt(
+                          (
+                            scores?.findScores[0].scored! /
+                            scores?.findScores[0].total!
+                          ).toPrecision(2),
+                          10
+                        ) * 100}
                     %)
                   </Text>
                 </Flex>
                 <Progress
                   value={
-                    (scores?.findScores[0].scored /
-                      scores?.findScores[0].total) *
+                    (scores?.findScores[0].scored! /
+                      scores?.findScores[0].total!) *
                     100
                   }
                   my={2}
-                  color="primary"
+                  color={(() => {
+                    const score =
+                      scores?.findScores[0].total === 0
+                        ? '100'
+                        : parseInt(
+                            (
+                              scores?.findScores[0].scored! /
+                              scores?.findScores[0].total!
+                            ).toPrecision(2),
+                            10
+                          ) * 100;
+                    if (score > 80) {
+                      return 'green';
+                    }
+                    if (score > 60) {
+                      return 'orange';
+                    }
+                    return 'red';
+                  })()}
                   isAnimated
                   hasStripe
                 />
@@ -132,8 +156,13 @@ const Scores: React.FC = () => {
                     <Flex align="center" mb={1}>
                       {score.scored} / {score.total} points
                       <Text color={isDark ? 'gray.300' : 'gray.500'} ml={2}>
-                        ({(score.scored / score.total).toPrecision(2) * 100}
-                        %)
+                        {score.total === 0
+                          ? '100'
+                          : parseInt(
+                              (score.scored / score.total).toPrecision(2),
+                              10
+                            ) * 100}
+                        %) %)
                       </Text>
                     </Flex>
                     <Link href="#" color="blue.400">
@@ -142,6 +171,7 @@ const Scores: React.FC = () => {
                   </Box>
                 );
               }
+              return null;
             })}
           </Flex>
         </Flex>

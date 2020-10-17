@@ -83,7 +83,7 @@ export const ContestNavbar: React.FC<{ id: string }> = ({ id }) => {
             bg={isDark && pathName === 'leaderboard' ? 'gray.600' : undefined}
             shadow={pathName === 'leaderboard' ? 'sm' : undefined}
             fontWeight="medium"
-            href="/contest/[id]"
+            href="/leaderboard/[id]"
             hrefAs={`/leaderboard/${contest.getContest.id}`}
             _hover={{
               textDecor: 'none',

@@ -31,5 +31,7 @@ module.exports = {
     'no-nested-ternary': 'off',
     'comma-dangle': 'off',
     'implicit-arrow-linebreak': 'off',
+    'react/jsx-one-expression-per-line': 'off',
+    indent: 'off',
   },
 };
