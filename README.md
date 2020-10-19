@@ -37,4 +37,4 @@ writters to toggle on and off leaderboards, private contests, etc.
 
 # Contributors
 
-Created with 💖 by Coderinblack
+Created with 💖 by Kevin & Kelly (Submission for Congressional App Challenge 2020)
