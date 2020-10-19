@@ -3,6 +3,7 @@ query FindScores {
     total
     scored
     contest {
+      id
       name
     }
   }

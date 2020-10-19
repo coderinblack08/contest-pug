@@ -81,6 +81,31 @@ const Contest: NextPage<{ id: string }> = ({ id }) => {
     return null;
   };
 
+  const save = async (values: any) => {
+    const newProblems = problems!.findProblems.map((problem, index) => {
+      const newProblem = JSON.parse(JSON.stringify(problem));
+      newProblem.points = values[`points${index}`];
+      if (newProblem.shortAnswer) {
+        newProblem.shortAnswer.question = values[`problem${index}`];
+        newProblem.shortAnswer.answer = values[`answer${index}`];
+      }
+      return newProblem;
+    });
+
+    const shortAnswers = newProblems.filter((problem) => problem.shortAnswer);
+
+    try {
+      await updateShortAnswer({
+        variables: {
+          problems: omitDeep(cloneDeep(shortAnswers), '__typename'),
+        },
+      });
+      await refetch();
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   if (contest?.getContest) {
     return (
       <>
@@ -215,22 +240,29 @@ const Contest: NextPage<{ id: string }> = ({ id }) => {
                               variantColor="green"
                               leftIcon="info-outline"
                               onClick={async () => {
-                                await createShortAnswer({
-                                  variables: { options: { contestId: id } },
-                                  update: (cache, { data }) => {
-                                    cache.writeQuery<FindProblemsQuery>({
-                                      query: FindProblemsDocument,
-                                      variables,
-                                      data: {
-                                        __typename: 'Query',
-                                        findProblems: [
-                                          ...(problems?.findProblems || []),
-                                          data!.createShortAnswer,
-                                        ] as Problem[],
-                                      },
-                                    });
-                                  },
-                                });
+                                save(values);
+                                try {
+                                  console.log(id);
+
+                                  await createShortAnswer({
+                                    variables: { options: { contestId: id } },
+                                    update: (cache, { data }) => {
+                                      cache.writeQuery<FindProblemsQuery>({
+                                        query: FindProblemsDocument,
+                                        variables,
+                                        data: {
+                                          __typename: 'Query',
+                                          findProblems: [
+                                            ...(problems?.findProblems || []),
+                                            data!.createShortAnswer,
+                                          ] as Problem[],
+                                        },
+                                      });
+                                    },
+                                  });
+                                } catch (error) {
+                                  console.error(error);
+                                }
                                 close();
                               }}
                             >
@@ -249,38 +281,7 @@ const Contest: NextPage<{ id: string }> = ({ id }) => {
                     <Button
                       ml={2}
                       leftIcon="download"
-                      onClick={async () => {
-                        const newProblems = problems.findProblems.map(
-                          (problem, index) => {
-                            const newProblem = JSON.parse(
-                              JSON.stringify(problem)
-                            );
-                            newProblem.points = values[`points${index}`];
-                            if (newProblem.shortAnswer) {
-                              newProblem.shortAnswer.question =
-                                values[`problem${index}`];
-                              newProblem.shortAnswer.answer =
-                                values[`answer${index}`];
-                            }
-                            return newProblem;
-                          }
-                        );
-
-                        const shortAnswers = newProblems.filter(
-                          (problem) => problem.shortAnswer
-                        );
-
-                        await updateShortAnswer({
-                          variables: {
-                            problems: omitDeep(
-                              cloneDeep(shortAnswers),
-                              '__typename'
-                            ),
-                          },
-                        });
-
-                        refetch();
-                      }}
+                      onClick={() => save(values)}
                     >
                       Save
                     </Button>

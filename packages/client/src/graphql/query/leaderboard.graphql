@@ -3,6 +3,7 @@ query LeaderBoard($contestId: String!) {
     scored
     total
     user {
+      id
       name
       profilePicture
     }

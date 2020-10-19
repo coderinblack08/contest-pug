@@ -10,10 +10,12 @@ import {
 import { NextPage } from 'next';
 import React from 'react';
 import { ContestNavbar } from '../../components/dashboard/shared/ContestNavbar';
+import { CustomLink } from '../../components/helpers/CustomLink';
 import { Layout } from '../../components/helpers/Layout';
 import {
   useGetContestQuery,
   useLeaderBoardQuery,
+  useMeQuery,
 } from '../../generated/graphql';
 
 const Leaderboard: NextPage<{ id: string }> = ({ id }) => {
@@ -26,6 +28,8 @@ const Leaderboard: NextPage<{ id: string }> = ({ id }) => {
   const { data: leaderboard } = useLeaderBoardQuery({
     variables: { contestId: id },
   });
+
+  const { data: me } = useMeQuery();
 
   if (contest?.getContest) {
     return (
@@ -54,8 +58,13 @@ const Leaderboard: NextPage<{ id: string }> = ({ id }) => {
                 align="center"
                 mb={index !== leaderboard.leaderboard.length - 1 ? 6 : 0}
               >
-                <Text mr={5} fontWeight="bold" fontSize="lg">
-                  {['🥇', '🥈', '🥉'][index]} {index + 1}.
+                <Text
+                  mr={5}
+                  fontSize="lg"
+                  color={isDark ? 'gray.300' : 'gray.600'}
+                >
+                  {/* {['🥇', '🥈', '🥉'][index]} */}
+                  {index + 1}.
                 </Text>
                 <Flex align="center">
                   <Avatar
@@ -66,8 +75,16 @@ const Leaderboard: NextPage<{ id: string }> = ({ id }) => {
                     src={`http://localhost:4000/images/${user.user.profilePicture}`}
                     mr={3}
                   />
-                  <Text fontWeight="semibold" fontSize="lg">
-                    {user.user.name}
+                  <Box ml={2} mr={5}>
+                    <Heading as="h6" fontSize="lg" fontWeight="medium">
+                      {user?.user?.name}
+                    </Heading>
+                    <Text color={isDark ? 'gray.400' : 'gray.500'}>
+                      {`@${user?.user?.name.toLowerCase().replace(/\s/, '')}`}
+                    </Text>
+                  </Box>
+                  <Text color={isDark ? 'gray.100' : 'gray.800'} ml={2}>
+                    {user.scored} / {user.total}
                   </Text>
                   <Text color={isDark ? 'gray.300' : 'gray.500'} ml={2}>
                     (
@@ -78,8 +95,9 @@ const Leaderboard: NextPage<{ id: string }> = ({ id }) => {
                   </Text>
                 </Flex>
                 <Progress
-                  w="60%"
+                  w="50%"
                   ml="auto"
+                  mr={5}
                   value={(user.scored / user.total) * 100}
                   my={2}
                   color={(() => {
@@ -98,6 +116,13 @@ const Leaderboard: NextPage<{ id: string }> = ({ id }) => {
                   isAnimated
                   hasStripe
                 />
+                {user.user.id === me?.me?.id! ? (
+                  <CustomLink href="#" text="Show Report" color="blue.400" />
+                ) : (
+                  <Text color="transparent" userSelect="none">
+                    Show Report
+                  </Text>
+                )}
               </Flex>
             ))}
           </Box>

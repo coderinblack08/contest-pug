@@ -10,6 +10,7 @@ import {
   MenuItem,
   MenuList,
   Skeleton,
+  Tag,
   Text,
   useColorMode,
 } from '@chakra-ui/core';
@@ -269,7 +270,12 @@ export const Sidenav: React.FC<{}> = () => {
               <MenuItem>
                 <CustomLink text="Settings" href="/settings" />
               </MenuItem>
-              <MenuItem>Upgrade</MenuItem>
+              <MenuItem>
+                Upgrade{' '}
+                <Tag size="sm" variantColor="primary" ml="2">
+                  Comming Soon
+                </Tag>
+              </MenuItem>
               <MenuItem
                 onClick={async () => {
                   await logout({

@@ -108,9 +108,7 @@ export const ContestCard: React.FC<ContestCardProps> = ({
             {loading ? (
               <Skeleton h={4} w={20} ml={4} />
             ) : (
-              <Text ml={2}>
-                {`${abbreviateNumber(contest.points || 120)} Participants`}
-              </Text>
+              <Text ml={2}>{`${abbreviateNumber(12)} Participants`}</Text>
             )}
           </Flex>
         </Flex>

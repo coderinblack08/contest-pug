@@ -46,6 +46,14 @@ const Dashboard: React.FC<{}> = () => {
   const [openBanner, setOpenBanner] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
 
+  const tilNow = (date: string) => {
+    const start = new Date(+date).getTime();
+    const now = new Date().getTime();
+    const diffTime = Math.max(start - now, 0);
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    return diffDays;
+  };
+
   useEffect(() => {
     (async () => {
       try {
@@ -140,7 +148,11 @@ const Dashboard: React.FC<{}> = () => {
                     ? contests?.joinedContests[0]?.name || '...'
                     : 'loading'
                 } `}
-                is in 2 days!
+                is in{' '}
+                {contests?.joinedContests[0]
+                  ? tilNow(contests?.joinedContests[0].startDate)
+                  : '...'}{' '}
+                days!
               </Text>
               <Button ml="auto" variantColor="primary">
                 Learn More

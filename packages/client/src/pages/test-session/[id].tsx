@@ -122,6 +122,8 @@ const Compete: NextPage<{ id: string }> = ({ id }) => {
         },
       },
       update: (cache) => {
+        cache.evict({ fieldName: 'findScores' });
+        cache.evict({ fieldName: 'leaderboard' });
         cache.evict({ fieldName: 'findProblems' });
         cache.evict({ fieldName: 'hasSubmitted' });
       },

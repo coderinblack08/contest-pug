@@ -16,6 +16,7 @@ import {
 import { Answer } from '../entity/Answer';
 import { Contest } from '../entity/Contest';
 import { Score } from '../entity/Score';
+import { User } from '../entity/User';
 import { AnswerArgs } from '../types/graphql/inputs/AnswerArgs';
 import { MyContext } from '../types/MyContext';
 import { contestInSession } from '../utils/contestInSession';
@@ -28,17 +29,34 @@ class ScoreResponse {
   @Field() contest!: Contest;
 }
 
+@ObjectType()
+class LeaderboardResponse {
+  @Field() total!: number;
+  @Field() scored!: number;
+  @Field() user!: User;
+}
+
 @Resolver()
 export class AnswersResolver {
-  @Query(() => Int)
-  async getScore(
-    @Arg('contestId') contestId: string
-    // @Ctx() { req, redis }: MyContext
-  ) {
-    const contest = await Contest.findOne(contestId);
-    if (!contest) {
-      throw new Error("Contest doesn't exist");
-    }
+  // @Query(() => Int)
+  // async getScore(
+  //   @Arg('contestId') contestId: string
+  //   // @Ctx() { req, redis }: MyContext
+  // ) {
+  //   const contest = await Contest.findOne(contestId);
+  //   if (!contest) {
+  //     throw new Error("Contest doesn't exist");
+  //   }
+  // }
+
+  @Query(() => [LeaderboardResponse])
+  async leaderboard(@Arg('contestId') contestId: string) {
+    const leaderboard = await Score.find({
+      where: { contestId },
+      order: { scored: 'DESC' },
+      relations: ['user'],
+    });
+    return leaderboard;
   }
 
   @Query(() => [ScoreResponse])

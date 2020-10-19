@@ -553,7 +553,7 @@ export type FindScoresQuery = (
     & Pick<ScoreResponse, 'total' | 'scored'>
     & { contest: (
       { __typename?: 'Contest' }
-      & Pick<Contest, 'name'>
+      & Pick<Contest, 'id' | 'name'>
     ) }
   )> }
 );
@@ -601,7 +601,7 @@ export type LeaderBoardQuery = (
     & Pick<LeaderboardResponse, 'scored' | 'total'>
     & { user: (
       { __typename?: 'User' }
-      & Pick<User, 'name' | 'profilePicture'>
+      & Pick<User, 'id' | 'name' | 'profilePicture'>
     ) }
   )> }
 );
@@ -1269,6 +1269,7 @@ export const FindScoresDocument = gql`
     total
     scored
     contest {
+      id
       name
     }
   }
@@ -1410,6 +1411,7 @@ export const LeaderBoardDocument = gql`
     scored
     total
     user {
+      id
       name
       profilePicture
     }
