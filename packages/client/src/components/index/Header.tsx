@@ -15,7 +15,7 @@ export const Header: React.FC<{}> = () => {
               fontSize={['4xl', '6xl']}
               lineHeight="none"
             >
-              Insipring Contests
+              Inspiring Contests
               <br />
               <Text
                 style={{
